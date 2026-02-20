@@ -1,46 +1,21 @@
 <?php
-require_once './db.php';
+require_once __DIR__ . './db.php';
 
-if (isset($_GET['id']) && isset($_GET["tabla"])) {
-    $id = $_GET['id'];
-    $tabla = $_GET["tabla"];
-    $sp_id = "";
 
-    // Whitelist validation for table and column names
-    if ($tabla === "modelos") {
-        $sp_id = "ID_Modelo";
-    } elseif ($tabla === "activos") {
-        $sp_id = "ID_Activo";
-    } elseif ($tabla === "asignacion") {
-        $sp_id = "ID_Asignacion";
-    }
+// En un archivo llamado funciones_db.php
+function obtenerRegistroPorId($pdo, $tabla, $id) {
+    $map = [
+        "modelos" => "ID_Modelo",
+        "activos" => "ID_Activo",
+        "asignacion" => "ID_Asignacion"
+    ];
 
-    // Only proceed if a valid table was matched
-    if ($sp_id !== "") {
-        try {
-            // Note: Table and Column names are injected directly, 
-            // only the VALUE ($id) uses a placeholder.
-            $sql = "SELECT * FROM $tabla WHERE $sp_id = ?";
-            
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([$id]);
+    if (!array_key_exists($tabla, $map)) return null;
 
-            $target = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            // fetch() returns an array or false, echo cannot print an array.
-            if ($target) {
-                echo json_encode($target); 
-            } else {
-                
-            }
-
-        } catch (\Throwable $th) {
-            echo "Error en la consulta: " . $th->getMessage();
-        }
-    } else {
-        echo "Tabla no permitida.";
-    }
-} else {
-    echo "Faltan parámetros (id o tabla).";
+    $sp_id = $map[$tabla];
+    $stmt = $pdo->prepare("SELECT * FROM $tabla WHERE $sp_id = ?");
+    $stmt->execute([$id]);
+    
+    return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 ?>
