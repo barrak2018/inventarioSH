@@ -93,8 +93,8 @@ include("./templates/header.php");
                                     <a href="./api/modelos/borrar_modelo.php?id=<?= $row['ID_Modelo'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar el modelo: <?= htmlspecialchars($row['Modelo']) ?>?')">Borrar</a>
 
 
-                                    <!-- <a href="./api/modelos/borrar_modelo.php?id=<?= $row['ID_Modelo'] ?>"><button class="btn btn-danger btn-sm">Borrar</button></a> -->
-                                    <button class="btn btn-secondary btn-sm">Editar</button>
+                                    <a href="./utils/item_info_modelo.php?id=<?= $row['ID_Modelo'] ?>" class="btn btn-secondary btn-sm" >Info</a>
+
                                 </td>
                             </tr>
                         <?php endforeach; ?>
