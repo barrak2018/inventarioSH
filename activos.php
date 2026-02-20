@@ -26,7 +26,7 @@ require_once './api/activos/crear_activo.php';
                         <select name="modelo" class="form-control form-control-sm">
                             <?php if (!empty($lista_modelos)):?>
                                 <?php foreach ($lista_modelos as $modelo): ?>
-                                    <?php $label = $modelo['ID_Modelo']. "   " . $modelo['Marca']. "   " . $modelo['Modelo'] ?>
+                                    <?php $label = $modelo['ID_Modelo']. "#: " . $modelo['Marca']. "   " . $modelo['Modelo'] ?>
                                     <option value="<?=htmlspecialchars($modelo['ID_Modelo'])?>"><?= htmlspecialchars($label) ?></option>
                                 <?php endforeach?>
                             <?php else: ?>
@@ -110,7 +110,7 @@ require_once './api/activos/crear_activo.php';
                             <td><?= htmlspecialchars($row['Estado']) ?></td>
                             <td class="small" ><?= htmlspecialchars($row['Observaciones']) ?></td>
                             <td>
-                                <button class="btn btn-danger btn-sm">Borrar</button>
+                                <a href="./api/activos/borrar_activo.php?id=<?= $row['ID_Activo'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar el Activo: <?= htmlspecialchars($row['Nombre']) ?>?')">Borrar</a>
                                 <button class="btn btn-secondary btn-sm">Editar</button>
                             </td>
                         </tr>
