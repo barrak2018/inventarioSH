@@ -1,5 +1,6 @@
 <?php include("./templates/header.php");
 require_once './api/modelos/leer_modelos.php';
+require_once './api/activos/leer_activos.php';
 require_once './api/activos/crear_activo.php';
 ?>
 
@@ -77,7 +78,53 @@ require_once './api/activos/crear_activo.php';
             </form>
         </div>
     </div>
+
+    <div class="card shado-sm">
+      
+      <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Modelo</th>
+                    <th>estado</th>
+                    <th>Observaciones</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (!empty($lista_activos)):?>
+                    <?php foreach($lista_activos as $row): ?>
+                        <?php
+                            foreach ($lista_modelos as $item) {
+                                if ($item['ID_Modelo'] === $row['ID_Modelo']) {
+                                    $Nombre_Modelo = $item['Modelo'];
+                                }
+                            }
+                        ?>
+                        <tr>
+                            <td><?= htmlspecialchars($row['ID_Activo']) ?></td>
+                            <td><?= htmlspecialchars($row['Nombre']) ?></td>
+                            <td><?= htmlspecialchars($Nombre_Modelo) ?></td>
+                            <td><?= htmlspecialchars($row['Estado']) ?></td>
+                            <td class="small" ><?= htmlspecialchars($row['Observaciones']) ?></td>
+                            <td>
+                                <button class="btn btn-danger btn-sm">Borrar</button>
+                                <button class="btn btn-secondary btn-sm">Editar</button>
+                            </td>
+                        </tr>
+                    <?php endforeach?>
+                <?php else:?>
+                    <tr>
+                        <td colspan="6" class="text-center">No hay datos registrados</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+      </div>
+    </div>
     
 </div>
 
-<?php include("./templates/footer.php"); ?>
+<?php include("./templates/depfooter.php"); ?>

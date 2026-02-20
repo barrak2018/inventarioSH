@@ -5,14 +5,14 @@ require_once __DIR__ . '/../db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Recolección de datos del formulario
-    $N_Serial = $_POST['N_Serial'] ?? '';
-    $ID_Modelo = $_POST['ID_Modelo'] ?? ''; 
-    $Estado = $_POST['Estado'] ?? '';
-    $Nombre = $_POST['Nombre'] ?? '';
-    $Fecha_compra = $_POST['Fecha_compra'] ?? '';
-    $Garantia = $_POST['Garantia'] ?? '';
-    $Modificado = $_POST['Modificado'] ?? '';
-    $Observaciones = $_POST['Observaciones'] ?? '';
+    $N_Serial = $_POST['serial'] ?? '';
+    $ID_Modelo = $_POST['modelo'] ?? ''; 
+    $Estado = $_POST['estado'] ?? '';
+    $Nombre = $_POST['nombre'] ?? '';
+    $Fecha_compra = $_POST['fecha_compra'] ?? '';
+    $Garantia = $_POST['vencimiento'] ?? '';
+    $Modificado = $_POST['modificado'] ?? '';
+    $Observaciones = $_POST['observaciones'] ?? '';
 
 
 
@@ -51,7 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (PDOException $e) {
             // 3. Ajuste de redirección de error:
             // Subimos dos niveles para llegar a la raíz donde está 'activos.php'
-            header("Location: ../../activos.php?status=error");
+            $error = urlencode($e->getMessage());
+            header("Location: ../../activos.php?status=error&msg=$error");
             exit();
         }
     }
