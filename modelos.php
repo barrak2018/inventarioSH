@@ -61,7 +61,8 @@ include("./templates/header.php");
                 </div>
             </form>
         </div>
-    </div> <div class="card shadow-sm">
+    </div>
+    <div class="card shadow-sm">
         <div class="card-body">
             <table class="table table-hover">
                 <thead>
@@ -84,8 +85,8 @@ include("./templates/header.php");
                                 <td><?= htmlspecialchars($row['Marca']) ?></td>
                                 <td><?= htmlspecialchars($row['Modelo']) ?></td>
                                 <td><?= htmlspecialchars($row['Categoria']) ?></td>
-                                <td><?= $row['Fecha_produccion'] ?></td>
-                                <td><?= $row['Fin_soporte'] ?></td>
+                                <td><?= htmlspecialchars($row['Fecha_produccion']) ?></td>
+                                <td><?= htmlspecialchars($row['Fin_soporte']) ?></td>
                                 <td class="small"><?= htmlspecialchars($row['Especificaciones']) ?></td>
                                 <td>
 

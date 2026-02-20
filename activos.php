@@ -1,4 +1,7 @@
-<?php include("./templates/header.php"); ?>
+<?php include("./templates/header.php");
+require_once './api/modelos/leer_modelos.php';
+require_once './api/activos/crear_activo.php';
+?>
 
 <div class="col-md-12 mt-4">
     <div class="card shadow-sm">
@@ -7,7 +10,7 @@
                 Registro de Activo Físico
             </h5>
 
-            <form action="procesar.php" method="POST">
+            <form action="./api/activos/crear_activo.php" method="POST">
                 <div class="row">
                     <div class="col-md-2 form-group">
                         <label class="font-weight-bold small">Nombre del Activo</label>
@@ -20,7 +23,15 @@
                     <div class="col-md-2 form-group">
                         <label class="font-weight-bold small">Modelo Relacionado</label>
                         <select name="modelo" class="form-control form-control-sm">
-                            <option value=""></option>
+                            <?php if (!empty($lista_modelos)):?>
+                                <?php foreach ($lista_modelos as $modelo): ?>
+                                    <?php $label = $modelo['ID_Modelo']. "   " . $modelo['Marca']. "   " . $modelo['Modelo'] ?>
+                                    <option value="<?=htmlspecialchars($modelo['ID_Modelo'])?>"><?= htmlspecialchars($label) ?></option>
+                                <?php endforeach?>
+                            <?php else: ?>
+                                    <option value="unknow" disabled>No hay Modelos Disponibles</option>
+                            <?php endif; ?>
+                            
                             </select>
                     </div>
                     <div class="col-md-2 form-group">
@@ -66,6 +77,7 @@
             </form>
         </div>
     </div>
+    
 </div>
 
 <?php include("./templates/footer.php"); ?>
