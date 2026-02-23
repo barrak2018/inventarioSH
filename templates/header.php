@@ -19,7 +19,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="#">Asignaciones</a>
+                <a class="nav-link" href="asignaciones.php">Asignaciones</a>
             </li>
         </ul>
     </nav>
