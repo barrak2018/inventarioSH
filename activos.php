@@ -39,8 +39,8 @@ require_once './api/activos/crear_activo.php';
                         <label class="font-weight-bold small">Estado</label>
                         <select name="estado" class="form-control form-control-sm">
                             <option value="disponible">Disponible</option>
-                            <option value="asignado">Asignado</option>
                             <option value="mantenimiento">En Mantenimiento</option>
+                            <option value="asignado" disabled>Asignado (Requiere Asignacion)</option>
                         </select>
                     </div>
                     <div class="col-md-2 form-group">

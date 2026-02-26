@@ -3,15 +3,6 @@ require_once __DIR__ . '/../api/leer.php';
 require_once __DIR__ . '/../api/activos/leer_activos.php';
 ?>
 
-
-
-
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -72,33 +63,45 @@ require_once __DIR__ . '/../api/activos/leer_activos.php';
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th>ID</th>
                                         <th>Nombre</th>
-                                        <th>Numero de Serie</th>
+                                        <th>Número de Serie</th>
                                         <th>Estado</th>
                                         <th>Observaciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($lista_activos as $key):?>
-                                        <?php if ($key['ID_Activo'] === $item["ID_Activo"]):?>
-                                           <tr>
-                                                <td scope="row"><?= $key["ID_Activo"] ?></td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr> 
-                                        <?php endif; ?>
-                                    <?php endforeach; ?>
-                                    <tr>
-                                        <td scope="row"></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
+                                    <?php 
+                                    $hay_activos = false;
+                                    foreach ($lista_activos as $key): 
+                                        // La relación correcta: El activo pertenece al ID_Modelo que estamos viendo
+                                        if ($key['ID_Modelo'] == $item["ID_Modelo"]): 
+                                            $hay_activos = true;
+                                    ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($key["ID_Activo"]) ?></td>
+                                            <td><?= htmlspecialchars($key["Nombre"]) ?></td>
+                                            <td><?= htmlspecialchars($key["N_Serial"]) ?></td>
+                                            <td>
+                                                <span class="badge <?= $key['Estado'] == 'Disponible' ? 'bg-success' : 'bg-warning' ?>">
+                                                    <?= htmlspecialchars($key["Estado"]) ?>
+                                                </span>
+                                            </td>
+                                            <td><?= htmlspecialchars($key["Observaciones"]) ?></td>
+                                        </tr> 
+                                    <?php 
+                                        endif; 
+                                    endforeach; 
+
+                                    if (!$hay_activos): 
+                                    ?>
+                                        <tr>
+                                            <td colspan="5" class="text-center">No hay activos físicos registrados para este modelo.</td>
+                                        </tr>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>
-                        
-                    </div>
                 </div>
             <?php else: ?>
                 <div class="col-md-6 mt-5">
