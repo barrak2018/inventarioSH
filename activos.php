@@ -111,7 +111,7 @@ require_once './api/activos/crear_activo.php';
                             <td class="small" ><?= htmlspecialchars($row['Observaciones']) ?></td>
                             <td>
                                 <a href="./api/activos/borrar_activo.php?id=<?= $row['ID_Activo'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar el Activo: <?= htmlspecialchars($row['Nombre']) ?>?')">Borrar</a>
-                                <button class="btn btn-secondary btn-sm">Editar</button>
+                                <a href="./utils/item_info_activo.php?id=<?= $row['ID_Activo'] ?>" class="btn btn-secondary btn-sm" >Info</a>
                             </td>
                         </tr>
                     <?php endforeach?>
