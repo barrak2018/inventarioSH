@@ -1,6 +1,17 @@
 <?php
 require_once __DIR__ . '/../api/leer.php'; 
+require_once __DIR__ . '/../api/activos/leer_activos.php';
 ?>
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -47,7 +58,46 @@ require_once __DIR__ . '/../api/leer.php';
                         </div>
                         <div class="card-footer text-end">
                             <a href="./../modelos.php" class="btn btn-secondary btn-sm">Volver al listado</a>
+                            <a href="#" class="btn btn-primary btn-sm">Editar</a>
                         </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8 mt-4">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0">Activos Asociados</h4>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Nombre</th>
+                                        <th>Numero de Serie</th>
+                                        <th>Estado</th>
+                                        <th>Observaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($lista_activos as $key):?>
+                                        <?php if ($key['ID_Activo'] === $item["ID_Activo"]):?>
+                                           <tr>
+                                                <td scope="row"><?= $key["ID_Activo"] ?></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr> 
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                    <tr>
+                                        <td scope="row"></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
                     </div>
                 </div>
             <?php else: ?>

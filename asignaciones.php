@@ -38,12 +38,29 @@ include("./templates/header.php");
 
                     <div class="col-md-2 form-group">
                         <label class="font-weight-bold small">Activo Asignado</label>
-                        <select name="ID_Activo" class="form-control form-control-sm">
-                            <?php foreach($lista_activos as $item):?>
-                                <?php if ($item['Estado'] === "Disponible"):?>
-                                <option value="<?=$item['ID_Activo']?>"><?=$item['ID_Activo'] .' # ' . $item['Nombre']. ' S/N: '. $item['N_Serial'] ?></option>
-                                <?php endif?>
-                            <?php endforeach;?>
+                        <select name="ID_Activo" class="form-control form-control-sm" required>
+                            <?php if (!empty($lista_activos)): ?>
+                                <?php 
+                                $hay_disponibles = false;
+                                foreach($lista_activos as $item): 
+                                    // Usamos trim() para evitar errores por espacios en blanco y strcasecmp para ignorar mayúsculas
+                                    if (isset($item['Estado']) && trim($item['Estado']) === "disponible"): 
+                                        $hay_disponibles = true;
+                                ?>
+                                    <option value="<?= htmlspecialchars($item['ID_Activo']) ?>">
+                                        <?= htmlspecialchars($item['ID_Activo'] . ' # ' . $item['Nombre'] . ' S/N: ' . $item['N_Serial']) ?>
+                                    </option>
+                                <?php 
+                                    endif;
+                                endforeach; 
+
+                                if (!$hay_disponibles): ?>
+                                    <option value="" disabled selected>No hay activos con estado 'Disponible'</option>
+                                <?php endif; ?>
+
+                            <?php else: ?>
+                                <option value="" disabled selected>No se encontraron activos en la base de datos</option>
+                            <?php endif; ?>
                         </select>
                     </div>
 
@@ -76,11 +93,13 @@ include("./templates/header.php");
                     <?php if (!empty($lista_asignaciones)): ?>
                         <?php foreach ($lista_asignaciones as $row): ?>
                             <?php
+                                // Buscamos el activo que corresponde a esta asignación específica
+                                $activo_nombre = "No encontrado"; 
                                 foreach ($lista_activos as $item) {
-                                    if ($item['Estado'] === "Disponible") {
-                                        $activo = $item["Nombre"] . "  S/N: " . $item['N_Serial'];
+                                    if ($item['ID_Activo'] == $row['ID_Activo']) { // Suponiendo que tu tabla asignaciones tiene ID_Activo
+                                        $activo_nombre = $item["Nombre"] . " S/N: " . $item['N_Serial'];
+                                        break; // Salimos del bucle una vez encontrado
                                     }
-                                    
                                 }
                             ?>
                             <tr>
@@ -88,17 +107,12 @@ include("./templates/header.php");
                                 <td><?= htmlspecialchars($row['Identificador']) ?></td>
                                 <td><?= htmlspecialchars($row['Fecha_Asignacion']) ?></td>
                                 <td><?= htmlspecialchars($row['Ultimo_Soporte'])?></td>
-                                <td><?= htmlspecialchars($activo)?></td>
-                                
+                                <td><?= htmlspecialchars($activo_nombre)?></td>
                                 <td>
-
-                                    <a href="./api/asignaciones/borrar_asignacion.php?id=<?= $row['ID_Asignacion'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar la asignacion de: <?= htmlspecialchars($row['Identificador']) ?>?')">Borrar</a>
-
-
-                                    <a href="./utils/item_info_modelo.php?id=<?= $row['ID_Asignacion'] ?>" class="btn btn-secondary btn-sm" >Info</a>
-
+                                    <a href="./api/asignaciones/borrar_asignacion.php?id=<?= $row['ID_Asignacion'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas la asignacion a: <?= htmlspecialchars($row['Identificador']) ?>?')">Borrar</a>
+                                    <button class="btn btn-secondary btn-sm">Editar</button>
                                 </td>
-                            </tr>
+                                </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
