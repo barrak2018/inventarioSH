@@ -30,10 +30,35 @@ FOREIGN key (ID_Modelo) references Modelos(ID_Modelo)
 
 create table Asignaciones(
 ID_Asignacion int primary key auto_increment,
-ID_empleado varchar(50),
+Identificador varchar(50),
 Fecha_Asignacion date,
 Ultimo_Soporte date,
 ID_Activo int unique not null,
 foreign key (ID_Activo) references Activos(ID_Activo)
 );
 show tables;
+DELIMITER //
+
+CREATE TRIGGER tr_activo_asignado
+AFTER INSERT ON Asignaciones
+FOR EACH ROW
+BEGIN
+    UPDATE Activos 
+    SET Estado = 'Asignado' 
+    WHERE ID_Activo = NEW.ID_Activo;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER tr_activo_disponible
+AFTER DELETE ON Asignaciones
+FOR EACH ROW
+BEGIN
+    UPDATE Activos 
+    SET Estado = 'Disponible' 
+    WHERE ID_Activo = OLD.ID_Activo;
+END //
+
+DELIMITER ;
