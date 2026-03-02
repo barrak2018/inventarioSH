@@ -4,11 +4,6 @@ include("./templates/header.php");
 ?>
 
 
-
-
-
-
-
 <div class="col-md-12 mt-4">
     <div class="card shadow-sm mb-4">
         <div class="card-body">
