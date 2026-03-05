@@ -52,3 +52,5 @@ function enviarRespuesta($codigo, $datos) {
     echo json_encode($datos);
     exit;
 }
+
+?>
