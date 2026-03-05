@@ -1,10 +1,9 @@
 <?php
-require_once __DIR__ . '/db.php';
+require_once  __DIR__.'/config.php';
 
-/**
- * Valida que la tabla y el campo existan en el esquema de la base de datos
- * para prevenir Inyección SQL en identificadores.
- */
+
+// CRUD operations for the database
+// Funcion de Validacion de Estructura de la Base de Datos para prevenir inyeccion SQL en identificadores
 function validarEstructuraDB($tabla, $campo = null) {
     // Definición exacta basada en tu MainQuery.sql
     $esquema = [
@@ -31,6 +30,8 @@ function validarEstructuraDB($tabla, $campo = null) {
 
     return true;
 }
+
+// ________________________CONSULTAS___________________________________________
 
 // obtenerRegistroPorId: obtiene un elemento por su id en una tabla especifica 
 function obtenerRegistroPorId($tabla, $id) {
@@ -76,4 +77,40 @@ function obtenerListaPorCampo($tabla, $campo, $valor) {
     // Retornamos array vacío si no hay resultados para facilitar el uso de foreach
     return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 }
+
+
+//______________________eliminacion______________________________________________________
+
+function borrarPorID($tabla, $id){
+    global $pdo; // IMPORTANTE: Acceder a la conexión global
+
+    $pks = [
+        "modelos" => "ID_Modelo",
+        "activos" => "ID_Activo",
+        "asignaciones" => "ID_Asignacion"
+    ];
+
+    // 1. Validar que la tabla existe en nuestro mapa para evitar SQL Injection
+    if (!array_key_exists($tabla, $pks)) {
+        return false;
+    }
+
+    $campoId = $pks[$tabla];
+
+    try {
+        // Los nombres de tabla y columna se insertan como strings, 
+        // solo el ID se pasa como parámetro por seguridad.
+        $sql = "DELETE FROM `$tabla` WHERE `$campoId` = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$id]);
+
+        return $stmt->rowCount() > 0; // Retorna true si realmente se borró algo
+    } catch (PDOException $e) {
+        // Opcional: error_log($e->getMessage());
+        return false;
+    }
+}
+
+
+
 ?>
