@@ -31,6 +31,29 @@ function validarEstructuraDB($tabla, $campo = null) {
     return true;
 }
 
+// ________________________Crear___________________________________________
+function crearRegistro($tabla, $datos) {
+    global $pdo;
+
+    if (!validarEstructuraDB($tabla)) {
+        return false;
+    }
+
+    $campos = array_keys($datos);
+    $placeholders = array_fill(0, count($campos), '?');
+
+    $sql = "INSERT INTO `$tabla` (" . implode(", ", $campos) . ") VALUES (" . implode(", ", $placeholders) . ")";
+    
+    try {
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(array_values($datos));
+        return $pdo->lastInsertId(); // Retorna el ID del nuevo registro
+    } catch (PDOException $e) {
+        // Opcional: error_log($e->getMessage());
+        return false;
+    }
+}
+
 // ________________________CONSULTAS___________________________________________
 
 // obtenerRegistroPorId: obtiene un elemento por su id en una tabla especifica 
