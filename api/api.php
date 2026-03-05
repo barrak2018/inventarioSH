@@ -8,8 +8,14 @@ require_once __DIR__ . '/crud.php';
 
 // 1. Capturar el método y la ruta
 $metodo = $_SERVER['REQUEST_METHOD'];
-$resource = isset($_GET['resource']) ? $_GET['resource'] : null; // Ejemplo: modelos, activos, asignaciones
+$resource = isset($_GET['resource']) ? $_GET['resource'] : null;
 $id = isset($_GET['id']) ? $_GET['id'] : null;
+
+// Manejo de peticiones OPTIONS (Preflight para CORS)
+if ($metodo == 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
 // 2. Lógica de enrutamiento
 switch ($metodo) {
@@ -39,10 +45,8 @@ function procesarGet($resource, $id) {
     }
 
     if ($id) {
-        // Ejemplo: GET /api.php?resource=activos&id=5
         $resultado = obtenerRegistroPorId($resource, $id);
     } else {
-        // Ejemplo: GET /api.php?resource=activos (Podrías crear una función obtenerTodo en crud.php)
         enviarRespuesta(400, ["error" => "ID requerido para esta consulta"]);
         return;
     }
@@ -50,16 +54,33 @@ function procesarGet($resource, $id) {
     $resultado ? enviarRespuesta(200, $resultado) : enviarRespuesta(404, ["error" => "No encontrado"]);
 }
 
+/**
+ * Lógica para CREAR registros
+ */
 function procesarPost($resource) {
-    // Leer el cuerpo de la petición (JSON)
-    $input = json_decode(file_get_contents("php://input"), true);
-    
-    if (!$input) {
-        enviarRespuesta(400, ["error" => "Datos JSON inválidos"]);
+    if (!$resource) {
+        enviarRespuesta(400, ["error" => "Recurso no especificado para la creación"]);
     }
 
-    // Aquí llamarías a una función de inserción que podrías añadir a crud.php
-    enviarRespuesta(201, ["mensaje" => "Recurso creado (Simulado)", "data" => $input]);
+    // Leer el cuerpo de la petición (JSON)
+    $json = file_get_contents('php://input');
+    $datos = json_decode($json, true); // Convertir a array asociativo
+
+    if (!$datos || !is_array($datos)) {
+        enviarRespuesta(400, ["error" => "Datos JSON inválidos o vacíos"]);
+    }
+
+    // Llamar a la función del archivo crud.php
+    $nuevoId = crearRegistro($resource, $datos);
+
+    if ($nuevoId) {
+        enviarRespuesta(201, [
+            "mensaje" => "Registro creado con éxito en $resource",
+            "id" => $nuevoId
+        ]);
+    } else {
+        enviarRespuesta(500, ["error" => "No se pudo crear el registro. Verifique la estructura de los datos."]);
+    }
 }
 
 function procesarDelete($resource, $id) {
