@@ -2,3 +2,7 @@ el inventario que se esta desarrollando para seguros horizonte tendra como ident
 
 
 las especificaciones de los equipos sera llevadas a cabo por categoria en la tabla se modelos se guardara la informacion de las caracteristicas en formato JSON
+
+
+Para facilitar el desarrollo el id de usuario en las asignaciones sera delegado a consultas en la base de datos de intranet
+ 
