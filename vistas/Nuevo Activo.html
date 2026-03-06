@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <base target="_self">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Activos</title>
+    <meta name="description" content="Sistema de gestión de activos con formulario para agregar nuevos activos">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#3b82f6",
+                        secondary: "#1e40af",
+                        success: "#10b981",
+                        warning: "#f59e0b",
+                        danger: "#ef4444",
+                        maintenance: "#fbbf24",
+                        critical: "#dc2626"
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <header class="bg-white shadow-sm">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-gray-800">Gestión de Activos</h1>
+                <ul id="nav-list" class="flex gap-6"></ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Formulario para agregar nuevo activo -->
+            <section class="bg-white rounded-xl shadow-md p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-6">Agregar Nuevo Activo</h2>
+                <form id="asset-form" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="asset-name" class="block text-sm font-medium text-gray-700 mb-2">Nombre del Activo</label>
+                            <input type="text" id="asset-name" name="asset-name" required 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                   placeholder="Ej: Servidor Principal">
+                        </div>
+                        
+                        <div>
+                            <label for="asset-type" class="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
+                            <select id="asset-type" name="asset-type" required 
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <option value="">Seleccionar tipo</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="asset-model" class="block text-sm font-medium text-gray-700 mb-2">Modelo</label>
+                            <input type="text" id="asset-model" name="asset-model" required 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                   placeholder="Ej: Dell PowerEdge R740">
+                        </div>
+                        
+                        <div>
+                            <label for="asset-status" class="block text-sm font-medium text-gray-700 mb-2">Estado</label>
+                            <select id="asset-status" name="asset-status" required 
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <option value="">Seleccionar estado</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="asset-location" class="block text-sm font-medium text-gray-700 mb-2">Ubicación</label>
+                            <input type="text" id="asset-location" name="asset-location" required 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                   placeholder="Ej: Sala de Servidores A">
+                        </div>
+                        
+                        <div>
+                            <label for="last-maintenance" class="block text-sm font-medium text-gray-700 mb-2">Último Mantenimiento</label>
+                            <input type="date" id="last-maintenance" name="last-maintenance" required 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4 pt-4">
+                        <button type="submit" 
+                                class="px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                            <i class="fas fa-plus mr-2"></i>Agregar Activo
+                        </button>
+                        <button type="reset" 
+                                class="px-6 py-3 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                            <i class="fas fa-redo mr-2"></i>Limpiar
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Lista de activos existentes -->
+            <section class="bg-white rounded-xl shadow-md p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-gray-800">Activos Registrados</h2>
+                    <div class="text-sm text-gray-500">
+                        <span id="asset-count">0</span> activos
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assets-table-body" class="bg-white divide-y divide-gray-200">
+                            <!-- Los activos se cargarán aquí dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="empty-state" class="text-center py-12">
+                    <i class="fas fa-box-open text-4xl text-gray-300 mb-4"></i>
+                    <p class="text-gray-500">No hay activos registrados. Agrega tu primer activo usando el formulario.</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- Modal para ver detalles -->
+        <div id="detail-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-50">
+            <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-6">
+                        <h3 class="text-xl font-bold text-gray-800">Detalles del Activo</h3>
+                        <button id="close-modal" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    <div id="modal-content" class="space-y-4">
+                        <!-- Los detalles se cargarán aquí dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-12">
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h3 class="text-lg font-semibold">Sistema de Gestión de Activos</h3>
+                    <p class="text-gray-400 text-sm mt-1">Mantén el control de todos tus activos en un solo lugar</p>
+                </div>
+                <ul id="footer-links" class="flex flex-wrap gap-6"></ul>
+            </div>
+            <div class="border-t border-gray-700 mt-6 pt-6 text-center text-gray-400 text-sm">
+                <p>&copy; 2024 Sistema de Gestión de Activos. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Capa de datos
+        const navigationItems = [
+            { "label": "Inicio", "href": "#", "icon": "fas fa-home" },
+            { "label": "Activos", "href": "#assets", "icon": "fas fa-boxes" },
+            { "label": "Reportes", "href": "#reports", "icon": "fas fa-chart-bar" },
+            { "label": "Configuración", "href": "#settings", "icon": "fas fa-cog" }
+        ];
+
+        const assetTypes = [
+            { "value": "hardware", "label": "Hardware" },
+            { "value": "software", "label": "Software" },
+            { "value": "equipo", "label": "Equipo" },
+            { "value": "vehiculo", "label": "Vehículo" },
+            { "value": "mobiliario", "label": "Mobiliario" },
+            { "value": "infraestructura", "label": "Infraestructura" }
+        ];
+
+        const statusOptions = [
+            { "value": "active", "label": "Activo", "color": "bg-success", "textColor": "text-success" },
+            { "value": "maintenance", "label": "Mantenimiento", "color": "bg-warning", "textColor": "text-warning" },
+            { "value": "critical", "label": "Crítico", "color": "bg-danger", "textColor": "text-danger" }
+        ];
+
+        const footerLinks = [
+            { "label": "Política de Privacidad", "href": "#privacy" },
+            { "label": "Términos de Servicio", "href": "#terms" },
+            { "label": "Contacto", "href": "#contact" },
+            { "label": "Soporte", "href": "#support" }
+        ];
+
+        // Datos de ejemplo para activos
+        let assets = [
+            {
+                "id": 1,
+                "name": "Servidor Principal",
+                "type": "hardware",
+                "model": "Dell PowerEdge R740",
+                "status": "active",
+                "location": "Sala de Servidores A",
+                "lastMaintenance": "2024-01-15",
+                "notes": "Servidor de producción principal"
+            },
+            {
+                "id": 2,
+                "name": "Router Cisco",
+                "type": "hardware",
+                "model": "Cisco ISR 4451",
+                "status": "maintenance",
+                "location": "Rack de Red",
+                "lastMaintenance": "2023-12-10",
+                "notes": "Requiere actualización de firmware"
+            },
+            {
+                "id": 3,
+                "name": "Aire Acondicionado",
+                "type": "infraestructura",
+                "model": "Daikin VRV IV",
+                "status": "critical",
+                "location": "Sala de Servidores B",
+                "lastMaintenance": "2023-11-20",
+                "notes": "Temperatura elevada, requiere revisión urgente"
+            }
+        ];
+
+        // Funciones de renderizado reutilizables
+        function renderNavItems(items) {
+            return items.map(item => 
+                `<li>
+                    <a href="${item.href}" class="flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
+                        <i class="${item.icon}"></i>
+                        <span>${item.label}</span>
+                    </a>
+                </li>`
+            ).join("");
+        }
+
+        function renderAssetTypes(options) {
+            return options.map(option => 
+                `<option value="${option.value}">${option.label}</option>`
+            ).join("");
+        }
+
+        function renderStatusOptions(options) {
+            return options.map(option => 
+                `<option value="${option.value}">${option.label}</option>`
+            ).join("");
+        }
+
+        function renderFooterLinks(items) {
+            return items.map(item => 
+                `<li>
+                    <a href="${item.href}" class="text-gray-400 hover:text-white transition-colors">
+                        ${item.label}
+                    </a>
+                </li>`
+            ).join("");
+        }
+
+        function renderAssetsTable(assetsList) {
+            if (assetsList.length === 0) {
+                document.getElementById("empty-state").classList.remove("hidden");
+                return "";
+            }
+            
+            document.getElementById("empty-state").classList.add("hidden");
+            return assetsList.map(asset => {
+                const status = statusOptions.find(s => s.value === asset.status);
+                const type = assetTypes.find(t => t.value === asset.type);
+                return `
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            <div class="font-medium text-gray-900">${asset.name}</div>
+                            <div class="text-sm text-gray-500">${asset.model}</div>
+                        </td>
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            <span class="px-3 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">
+                                ${type ? type.label : asset.type}
+                            </span>
+                        </td>
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            <span class="px-3 py-1 text-xs font-medium ${status.color} text-white rounded-full">
+                                ${status.label}
+                            </span>
+                        </td>
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            <div class="flex gap-2">
+                                <button onclick="viewAssetDetails(${asset.id})" 
+                                        class="p-2 text-primary hover:bg-blue-50 rounded-lg transition-colors"
+                                        title="Ver detalles">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button onclick="editAsset(${asset.id})" 
+                                        class="p-2 text-warning hover:bg-yellow-50 rounded-lg transition-colors"
+                                        title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="deleteAsset(${asset.id})" 
+                                        class="p-2 text-danger hover:bg-red-50 rounded-lg transition-colors"
+                                        title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join("");
+        }
+
+        function renderAssetDetails(asset) {
+            const status = statusOptions.find(s => s.value === asset.status);
+            const type = assetTypes.find(t => t.value === asset.type);
+            
+            return `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500">Nombre</h4>
+                            <p class="mt-1 text-lg font-semibold">${asset.name}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500">Tipo</h4>
+                            <p class="mt-1">${type ? type.label : asset.type}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500">Modelo</h4>
+                            <p class="mt-1">${asset.model}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500">Estado</h4>
+                            <p class="mt-1">
+                                <span class="px-3 py-1 text-sm font-medium ${status.color} text-white rounded-full">
+                                    ${status.label}
+                                </span>
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500">Ubicación</h4>
+                            <p class="mt-1">${asset.location}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500">Último Mantenimiento</h4>
+                            <p class="mt-1">${formatDate(asset.lastMaintenance)}</p>
+                        </div>
+                    </div>
+                </div>
+                ${asset.notes ? `
+                    <div class="pt-4 border-t border-gray-200">
+                        <h4 class="text-sm font-medium text-gray-500 mb-2">Notas</h4>
+                        <p class="text-gray-700">${asset.notes}</p>
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        // Funciones de utilidad
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString("es-ES", {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            });
+        }
+
+        function updateAssetCount() {
+            document.getElementById("asset-count").textContent = assets.length;
+        }
+
+        // Funciones de gestión de activos
+        function viewAssetDetails(assetId) {
+            const asset = assets.find(a => a.id === assetId);
+            if (asset) {
+                document.getElementById("modal-content").innerHTML = renderAssetDetails(asset);
+                document.getElementById("detail-modal").classList.remove("hidden");
+            }
+        }
+
+        function editAsset(assetId) {
+            const asset = assets.find(a => a.id === assetId);
+            if (asset) {
+                // Llenar el formulario con los datos del activo
+                document.getElementById("asset-name").value = asset.name;
+                document.getElementById("asset-type").value = asset.type;
+                document.getElementById("asset-model").value = asset.model;
+                document.getElementById("asset-status").value = asset.status;
+                document.getElementById("asset-location").value = asset.location;
+                document.getElementById("last-maintenance").value = asset.lastMaintenance;
+                
+                // Cambiar el texto del botón de submit
+                const submitBtn = document.querySelector("#asset-form button[type='submit']");
+                submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i>Actualizar Activo';
+                submitBtn.dataset.editingId = assetId;
+                
+                // Desplazar al formulario
+                document.querySelector("#asset-form").scrollIntoView({ behavior: "smooth" });
+            }
+        }
+
+        function deleteAsset(assetId) {
+            if (confirm("¿Estás seguro de que deseas eliminar este activo?")) {
+                assets = assets.filter(a => a.id !== assetId);
+                refreshAssetsTable();
+                updateAssetCount();
+            }
+        }
+
+        function refreshAssetsTable() {
+            document.getElementById("assets-table-body").innerHTML = renderAssetsTable(assets);
+        }
+
+        // Inicialización
+        document.addEventListener("DOMContentLoaded", function() {
+            // Renderizar elementos estáticos
+            document.getElementById("nav-list").innerHTML = renderNavItems(navigationItems);
+            document.getElementById("asset-type").innerHTML = 
+                '<option value="">Seleccionar tipo</option>' + renderAssetTypes(assetTypes);
+            document.getElementById("asset-status").innerHTML = 
+                '<option value="">Seleccionar estado</option>' + renderStatusOptions(statusOptions);
+            document.getElementById("footer-links").innerHTML = renderFooterLinks(footerLinks);
+            
+            // Cargar activos iniciales
+            refreshAssetsTable();
+            updateAssetCount();
+            
+            // Manejar envío del formulario
+            document.getElementById("asset-form").addEventListener("submit", function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    id: this.querySelector("button[type='submit']").dataset.editingId 
+                        ? parseInt(this.querySelector("button[type='submit']").dataset.editingId)
+                        : assets.length > 0 ? Math.max(...assets.map(a => a.id)) + 1 : 1,
+                    name: document.getElementById("asset-name").value,
+                    type: document.getElementById("asset-type").value,
+                    model: document.getElementById("asset-model").value,
+                    status: document.getElementById("asset-status").value,
+                    location: document.getElementById("asset-location").value,
+                    lastMaintenance: document.getElementById("last-maintenance").value,
+                    notes: ""
+                };
+                
+                const submitBtn = this.querySelector("button[type='submit']");
+                const isEditing = submitBtn.dataset.editingId;
+                
+                if (isEditing) {
+                    // Actualizar activo existente
+                    const index = assets.findIndex(a => a.id === parseInt(isEditing));
+                    if (index !== -1) {
+                        assets[index] = { ...assets[index], ...formData };
+                    }
+                    // Restaurar botón
+                    submitBtn.innerHTML = '<i class="fas fa-plus mr-2"></i>Agregar Activo';
+                    delete submitBtn.dataset.editingId;
+                } else {
+                    // Agregar nuevo activo
+                    assets.push(formData);
+                }
+                
+                // Actualizar tabla y contador
+                refreshAssetsTable();
+                updateAssetCount();
+                
+                // Resetear formulario
+                this.reset();
+                
+                // Mostrar mensaje de éxito
+                alert(isEditing ? "Activo actualizado correctamente" : "Activo agregado correctamente");
+            });
+            
+            // Manejar cierre del modal
+            document.getElementById("close-modal").addEventListener("click", function() {
+                document.getElementById("detail-modal").classList.add("hidden");
+            });
+            
+            // Cerrar modal al hacer clic fuera
+            document.getElementById("detail-modal").addEventListener("click", function(e) {
+                if (e.target === this) {
+                    this.classList.add("hidden");
+                }
+            });
+            
+            // Manejar navegación suave para todos los enlaces
+            document.addEventListener("click", function(event) {
+                const link = event.target.closest("a[href^='#']");
+                if (!link) return;
+                event.preventDefault();
+                const targetId = link.getAttribute("href");
+                if (targetId === "#") {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                } else {
+                    const target = document.querySelector(targetId);
+                    if (target) {
+                        target.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }
+                }
+            });
+            
+            // Establecer fecha por defecto para último mantenimiento (hoy)
+            const today = new Date().toISOString().split("T")[0];
+            document.getElementById("last-maintenance").value = today;
+        });
+    </script>
+</body>
+</html>

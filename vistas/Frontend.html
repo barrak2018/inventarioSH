@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <base target="_self">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Control de Inventario</title>
+    <meta name="description" content="Sistema web para gestión de activos, modelos y asignación de recursos">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#2563eb",
+                        secondary: "#475569",
+                        accent: "#0ea5e9",
+                        success: "#10b981",
+                        warning: "#f59e0b",
+                        danger: "#ef4444",
+                        dark: "#1e293b"
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif']
+                    },
+                    spacing: {
+                        '128': '32rem',
+                        '144': '36rem'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .page-transition {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .active-page {
+            display: block;
+            opacity: 1;
+        }
+        .hidden-page {
+            display: none;
+            opacity: 0;
+        }
+        .card-hover {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 font-sans">
+    <!-- Header y Navegación -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-primary p-2 rounded-lg">
+                        <i class="fas fa-boxes text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-dark">Sistema de Inventario</h1>
+                        <p class="text-sm text-secondary">Gestión de activos web</p>
+                    </div>
+                </div>
+                
+                <nav class="hidden md:block">
+                    <ul id="main-nav" class="flex space-x-6"></ul>
+                </nav>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <i class="fas fa-bell text-secondary hover:text-primary cursor-pointer"></i>
+                        <span class="absolute -top-1 -right-1 bg-danger text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <img src="https://picsum.photos/32?random=100" alt="Usuario" class="w-8 h-8 rounded-full">
+                        <span class="text-sm font-medium text-dark hidden md:inline">Admin</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenedor Principal de Páginas -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Página 1: Gestión de Activos -->
+        <section id="page-activos" class="page-transition active-page">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-dark mb-2">Gestión de Activos</h2>
+                <p class="text-secondary">Administra y monitorea todos los activos web del inventario</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold text-dark">Resumen de Activos</h3>
+                        <span class="bg-primary/10 text-primary text-sm font-medium px-3 py-1 rounded-full">Total</span>
+                    </div>
+                    <div class="text-3xl font-bold text-dark mb-2" id="total-activos">0</div>
+                    <p class="text-sm text-secondary">Activos registrados en el sistema</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold text-dark">Activos Activos</h3>
+                        <span class="bg-success/10 text-success text-sm font-medium px-3 py-1 rounded-full">Operativos</span>
+                    </div>
+                    <div class="text-3xl font-bold text-success mb-2" id="activos-operativos">0</div>
+                    <p class="text-sm text-secondary">En funcionamiento normal</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold text-dark">Necesitan Mantenimiento</h3>
+                        <span class="bg-warning/10 text-warning text-sm font-medium px-3 py-1 rounded-full">Alerta</span>
+                    </div>
+                    <div class="text-3xl font-bold text-warning mb-2" id="activos-mantenimiento">0</div>
+                    <p class="text-sm text-secondary">Requieren atención</p>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow overflow-hidden">
+                <div class="px-6 py-4 border-b flex justify-between items-center">
+                    <h3 class="font-semibold text-dark">Lista de Activos</h3>
+                    <button id="btn-nuevo-activo" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition flex items-center space-x-2">
+                        <i class="fas fa-plus"></i>
+                        <span>Nuevo Activo</span>
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr id="activos-table-header"></tr>
+                        </thead>
+                        <tbody id="activos-table-body" class="divide-y"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Página 2: Gestión de Modelos -->
+        <section id="page-modelos" class="page-transition hidden-page">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-dark mb-2">Gestión de Modelos</h2>
+                <p class="text-secondary">Administra los modelos y categorías de activos</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div id="modelos-grid"></div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-semibold text-dark">Especificaciones de Modelos</h3>
+                    <button id="btn-nuevo-modelo" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition flex items-center space-x-2">
+                        <i class="fas fa-plus"></i>
+                        <span>Nuevo Modelo</span>
+                    </button>
+                </div>
+                <div id="modelos-detalle"></div>
+            </div>
+        </section>
+
+        <!-- Página 3: Asignación de Activos -->
+        <section id="page-asignacion" class="page-transition hidden-page">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-dark mb-2">Asignación de Activos</h2>
+                <p class="text-secondary">Asigna activos a departamentos y usuarios</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white rounded-xl shadow p-6">
+                    <h3 class="font-semibold text-dark mb-6">Asignaciones Activas</h3>
+                    <div id="asignaciones-lista"></div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <h3 class="font-semibold text-dark mb-4">Nueva Asignación</h3>
+                        <form id="form-asignacion" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">Activo</label>
+                                <select class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary focus:border-transparent" id="select-activo">
+                                    <option value="">Seleccionar activo</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">Usuario/Departamento</label>
+                                <select class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary focus:border-transparent" id="select-usuario">
+                                    <option value="">Seleccionar destino</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">Fecha de Asignación</label>
+                                <input type="date" class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary focus:border-transparent" id="fecha-asignacion">
+                            </div>
+                            <button type="submit" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90 transition">
+                                Asignar Activo
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <h3 class="font-semibold text-dark mb-4">Distribución por Departamento</h3>
+                        <div id="distribucion-departamentos"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white mt-12">
+        <div class="container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="bg-white p-2 rounded-lg">
+                            <i class="fas fa-boxes text-primary text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Sistema de Inventario</h3>
+                    </div>
+                    <p class="text-gray-300">Sistema web para la gestión y control de activos digitales y físicos.</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Enlaces Rápidos</h4>
+                    <ul id="footer-links" class="space-y-2"></ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Contacto</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-envelope"></i>
+                            <span>soporte@inventario.com</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-phone"></i>
+                            <span>+1 (555) 123-4567</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Ciudad Digital, DT 12345</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+                <p>&copy; 2024 Sistema de Control de Inventario. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ==================== CAPA DE DATOS ====================
+        const navigationData = [
+            { "id": "activos", "label": "Gestión de Activos", "icon": "fa-box", "active": true },
+            { "id": "modelos", "label": "Gestión de Modelos", "icon": "fa-layer-group" },
+            { "id": "asignacion", "label": "Asignación", "icon": "fa-user-check" }
+        ];
+
+        const activosData = [
+            { 
+                "id": 1, 
+                "nombre": "Servidor Web Principal", 
+                "tipo": "Servidor", 
+                "modelo": "Dell PowerEdge R740", 
+                "estado": "Activo", 
+                "ubicacion": "Data Center A", 
+                "ultimoMantenimiento": "2024-01-15",
+                "estadoColor": "success"
+            },
+            { 
+                "id": 2, 
+                "nombre": "Router Corporativo", 
+                "tipo": "Red", 
+                "modelo": "Cisco ISR 4451", 
+                "estado": "Activo", 
+                "ubicacion": "Oficina Central", 
+                "ultimoMantenimiento": "2024-02-20",
+                "estadoColor": "success"
+            },
+            { 
+                "id": 3, 
+                "nombre": "Switch de Piso 3", 
+                "tipo": "Red", 
+                "modelo": "HP Aruba 2930F", 
+                "estado": "Mantenimiento", 
+                "ubicacion": "Piso 3 - Rack B", 
+                "ultimoMantenimiento": "2023-12-10",
+                "estadoColor": "warning"
+            },
+            { 
+                "id": 4, 
+                "nombre": "Firewall Perimetral", 
+                "tipo": "Seguridad", 
+                "modelo": "Fortinet FG-100F", 
+                "estado": "Activo", 
+                "ubicacion": "Data Center A", 
+                "ultimoMantenimiento": "2024-01-30",
+                "estadoColor": "success"
+            },
+            { 
+                "id": 5, 
+                "nombre": "NAS Backup", 
+                "tipo": "Almacenamiento", 
+                "modelo": "Synology RS2416+", 
+                "estado": "Crítico", 
+                "ubicacion": "Data Center B", 
+                "ultimoMantenimiento": "2023-11-05",
+                "estadoColor": "danger"
+            },
+            { 
+                "id": 6, 
+                "nombre": "AP Inalámbrico", 
+                "tipo": "Red", 
+                "modelo": "Ubiquiti UAP-AC-PRO", 
+                "estado": "Activo", 
+                "ubicacion": "Piso 2 - Área Oficinas", 
+                "ultimoMantenimiento": "2024-02-15",
+                "estadoColor": "success"
+            }
+        ];
+
+        const modelosData = [
+            { 
+                "id": 1, 
+                "nombre": "Dell PowerEdge R740", 
+                "categoria": "Servidor", 
+                "fabricante": "Dell", 
+                "especificaciones": "2x Xeon Gold, 256GB RAM, 8x 1TB SSD", 
+                "activosAsociados": 12,
+                "imagen": "https://picsum.photos/300/200?random=10"
+            },
+            { 
+                "id": 2, 
+                "nombre": "Cisco ISR 4451", 
+                "categoria": "Router", 
+                "fabricante": "Cisco", 
+                "especificaciones": "4x 1Gbps, 8x SFP, IOS XE", 
+                "activosAsociados": 8,
+                "imagen": "https://picsum.photos/300/200?random=11"
+            },
+            { 
+                "id": 3, 
+                "nombre": "HP Aruba 2930F", 
+                "categoria": "Switch", 
+                "fabricante": "HP", 
+                "especificaciones": "48 puertos 1G, 4x SFP+, PoE+", 
+                "activosAsociados": 15,
+                "imagen": "https://picsum.photos/300/200?random=12"
+            },
+            { 
+                "id": 4, 
+                "nombre": "Fortinet FG-100F", 
+                "categoria": "Firewall", 
+                "fabricante": "Fortinet", 
+                "especificaciones": "10Gbps throughput, UTM, VPN", 
+                "activosAsociados": 6,
+                "imagen": "https://picsum.photos/300/200?random=13"
+            }
+        ];
+
+        const asignacionesData = [
+            { 
+                "id": 1, 
+                "activo": "Servidor Web Principal", 
+                "usuario": "Departamento IT", 
+                "fechaAsignacion": "2024-01-10", 
+                "estado": "Activa",
+                "estadoColor": "success"
+            },
+            { 
+                "id": 2, 
+                "activo": "Router Corporativo", 
+                "usuario": "Redes Corporativas", 
+                "fechaAsignacion": "2024-02-01", 
+                "estado": "Activa",
+                "estadoColor": "success"
+            },
+            { 
+                "id": 3, 
+                "activo": "Switch de Piso 3", 
+                "usuario": "Soporte Técnico", 
+                "fechaAsignacion": "2023-11-15", 
+                "estado": "En Revisión",
+                "estadoColor": "warning"
+            },
+            { 
+                "id": 4, 
+                "activo": "Firewall Perimetral", 
+                "usuario": "Seguridad Informática", 
+                "fechaAsignacion": "2024-01-20", 
+                "estado": "Activa",
+                "estadoColor": "success"
+            }
+        ];
+
+        const departamentosData = [
+            { "nombre": "Departamento IT", "activos": 8, "color": "primary" },
+            { "nombre": "Redes Corporativas", "activos": 12, "color": "accent" },
+            { "nombre": "Seguridad Informática", "activos": 6, "color": "success" },
+            { "nombre": "Soporte Técnico", "activos": 10, "color": "warning" },
+            { "nombre": "Desarrollo", "activos": 15, "color": "secondary" }
+        ];
+
+        const usuariosData = [
+            { "id": 1, "nombre": "Ana García", "departamento": "IT", "rol": "Administrador" },
+            { "id": 2, "nombre": "Carlos López", "departamento": "Redes", "rol": "Especialista" },
+            { "id": 3, "nombre": "María Rodríguez", "departamento": "Seguridad", "rol": "Analista" },
+            { "id": 4, "nombre": "Juan Martínez", "departamento": "Soporte", "rol": "Técnico" },
+            { "id": 5, "nombre": "Laura Sánchez", "departamento": "Desarrollo", "rol": "Líder" }
+        ];
+
+        const footerLinksData = [
+            { "label": "Política de Privacidad", "href": "#privacidad" },
+            { "label": "Términos de Servicio", "href": "#terminos" },
+            { "label": "Soporte Técnico", "href": "#soporte" },
+            { "label": "Documentación", "href": "#docs" },
+            { "label": "Acerca de", "href": "#about" }
+        ];
+
+        // ==================== FUNCIONES DE RENDERIZADO ====================
+        
+        // 1. Renderizar navegación principal
+        function renderNavigation(items) {
+            return items.map(item => `
+                <li>
+                    <button data-page="${item.id}" class="nav-btn flex items-center space-x-2 px-4 py-2 rounded-lg transition ${item.active ? 'bg-primary text-white' : 'text-secondary hover:bg-gray-100'}">
+                        <i class="fas ${item.icon}"></i>
+                        <span>${item.label}</span>
+                    </button>
+                </li>
+            `).join("");
+        }
+
+        // 2. Renderizar tabla de activos
+        function renderActivosTable(items) {
+            const header = `
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Nombre</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Tipo</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Modelo</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Estado</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Ubicación</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Último Mantenimiento</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Acciones</th>
+                </tr>
+            `;
+            
+            const body = items.map(item => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="font-medium text-dark">${item.nombre}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-3 py-1 text-xs rounded-full bg-gray-100 text-secondary">${item.tipo}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-secondary">${item.modelo}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-3 py-1 text-xs rounded-full bg-${item.estadoColor}/10 text-${item.estadoColor}">${item.estado}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-secondary">${item.ubicacion}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-secondary">${item.ultimoMantenimiento}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex space-x-2">
+                            <button class="text-primary hover:text-primary/80" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-accent hover:text-accent/80" title="Ver Detalles">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="text-danger hover:text-danger/80" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join("");
+            
+            return { header, body };
+        }
+
+        // 3. Renderizar tarjetas de modelos
+        function renderModelosCards(items) {
+            return items.map(item => `
+                <div class="bg-white rounded-xl shadow card-hover overflow-hidden">
+                    <img src="${item.imagen}" alt="${item.nombre}" class="w-full h-48 object-cover" loading="lazy">
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-semibold text-dark">${item.nombre}</h4>
+                            <span class="bg-primary/10 text-primary text-xs font-medium px-2 py-1 rounded">${item.categoria}</span>
+                        </div>
+                        <p class="text-sm text-secondary mb-3">${item.fabricante}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-secondary">${item.activosAsociados} activos</span>
+                            <button class="text-primary hover:text-primary/80 text-sm font-medium">
+                                Ver detalles <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        // 4. Renderizar lista de asignaciones
+        function renderAsignacionesList(items) {
+            return items.map(item => `
+                <div class="border-b last:border-b-0 py-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h4 class="font-medium text-dark">${item.activo}</h4>
+                            <p class="text-sm text-secondary">Asignado a: ${item.usuario}</p>
+                        </div>
+                        <span class="px-3 py-1 text-xs rounded-full bg-${item.estadoColor}/10 text-${item.estadoColor}">${item.estado}</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm text-secondary">
+                        <span>Asignado: ${item.fechaAsignacion}</span>
+                        <div class="flex space-x-2">
+                            <button class="text-primary hover:text-primary/80" title="Reasignar">
+                                <i class="fas fa-exchange-alt"></i>
+                            </button>
+                            <button class="text-danger hover:text-danger/80" title="Liberar">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        // 5. Renderizar distribución por departamento
+        function renderDistribucionDepartamentos(items) {
+            return items.map(item => `
+                <div class="mb-4">
+                    <div class="flex justify-between mb-1">
+                        <span class="text-sm font-medium text-dark">${item.nombre}</span>
+                        <span class="text-sm text-secondary">${item.activos} activos</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-${item.color} h-2 rounded-full" style="width: ${(item.activos / 51) * 100}%"></div>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        // 6. Renderizar enlaces del footer
+        function renderFooterLinks(items) {
+            return items.map(item => `
+                <li>
+                    <a href="${item.href}" class="text-gray-300 hover:text-white transition">${item.label}</a>
+                </li>
+            `).join("");
+        }
+
+        // 7. Renderizar detalles de modelos
+        function renderModelosDetalle(items) {
+            return items.map(item => `
+                <div class="border-b last:border-b-0 py-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-medium text-dark">${item.nombre}</h4>
+                            <p class="text-sm text-secondary mt-1">${item.especificaciones}</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="block text-sm text-secondary">Categoría: ${item.categoria}</span>
+                            <span class="block text-sm text-secondary">Fabricante: ${item.fabricante}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        // ==================== INICIALIZACIÓN ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Renderizar navegación
+            document.getElementById('main-nav').innerHTML = renderNavigation(navigationData);
+            
+            // Renderizar tabla de activos
+            const activosTable = renderActivosTable(activosData);
+            document.getElementById('activos-table-header').innerHTML = activosTable.header;
+            document.getElementById('activos-table-body').innerHTML = activosTable.body;
+            
+            // Actualizar estadísticas de activos
+            const totalActivos = activosData.length;
+            const activosOperativos = activosData.filter(a => a.estado === 'Activo').length;
+            const activosMantenimiento = activosData.filter(a => a.estado === 'Mantenimiento' || a.estado === 'Crítico').length;
+            
+            document.getElementById('total-activos').textContent = totalActivos;
+            document.getElementById('activos-operativos').textContent = activosOperativos;
+            document.getElementById('activos-mantenimiento').textContent = activosMantenimiento;
+            
+            // Renderizar modelos
+            document.getElementById('modelos-grid').innerHTML = renderModelosCards(modelosData);
+            document.getElementById('modelos-detalle').innerHTML = renderModelosDetalle(modelosData);
+            
+            // Renderizar asignaciones
+            document.getElementById('asignaciones-lista').innerHTML = renderAsignacionesList(asignacionesData);
+            document.getElementById('distribucion-departamentos').innerHTML = renderDistribucionDepartamentos(departamentosData);
+            
+            // Renderizar footer
+            document.getElementById('footer-links').innerHTML = renderFooterLinks(footerLinksData);
+            
+            // Llenar selects del formulario de asignación
+            const selectActivo = document.getElementById('select-activo');
+            activosData.forEach(activo => {
+                const option = document.createElement('option');
+                option.value = activo.id;
+                option.textContent = `${activo.nombre} (${activo.modelo})`;
+                selectActivo.appendChild(option);
+            });
+            
+            const selectUsuario = document.getElementById('select-usuario');
+            usuariosData.forEach(usuario => {
+                const option = document.createElement('option');
+                option.value = usuario.id;
+                option.textContent = `${usuario.nombre} - ${usuario.departamento}`;
+                selectUsuario.appendChild(option);
+            });
+            
+            // Establecer fecha actual por defecto
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('fecha-asignacion').value = today;
+            
+            // ==================== MANEJO DE EVENTOS ====================
+            
+            // Navegación entre páginas
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const pageId = this.getAttribute('data-page');
+                    
+                    // Actualizar estado activo en navegación
+                    document.querySelectorAll('.nav-btn').forEach(b => {
+                        b.classList.remove('bg-primary', 'text-white');
+                        b.classList.add('text-secondary', 'hover:bg-gray-100');
+                    });
+                    this.classList.remove('text-secondary', 'hover:bg-gray-100');
+                    this.classList.add('bg-primary', 'text-white');
+                    
+                    // Ocultar todas las páginas
+                    document.querySelectorAll('[id^="page-"]').forEach(page => {
+                        page.classList.remove('active-page');
+                        page.classList.add('hidden-page');
+                    });
+                    
+                    // Mostrar página seleccionada
+                    const targetPage = document.getElementById(`page-${pageId}`);
+                    targetPage.classList.remove('hidden-page');
+                    targetPage.classList.add('active-page');
+                });
+            });
+            
+            // Formulario de asignación
+            document.getElementById('form-asignacion').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const activoId = document.getElementById('select-activo').value;
+                const usuarioId = document.getElementById('select-usuario').value;
+                const fecha = document.getElementById('fecha-asignacion').value;
+                
+                if (!activoId || !usuarioId) {
+                    alert('Por favor, complete todos los campos requeridos');
+                    return;
+                }
+                
+                const activo = activosData.find(a => a.id == activoId);
+                const usuario = usuariosData.find(u => u.id == usuarioId);
+                
+                // Agregar nueva asignación
+                const nuevaAsignacion = {
+                    id: asignacionesData.length + 1,
+                    activo: activo.nombre,
+                    usuario: usuario.nombre,
+                    fechaAsignacion: fecha,
+                    estado: 'Activa',
+                    estadoColor: 'success'
+                };
+                
+                asignacionesData.unshift(nuevaAsignacion);
+                document.getElementById('asignaciones-lista').innerHTML = renderAsignacionesList(asignacionesData);
+                
+                // Actualizar distribución
+                const deptoIndex = departamentosData.findIndex(d => d.nombre.includes(usuario.departamento));
+                if (deptoIndex !== -1) {
+                    departamentosData[deptoIndex].activos++;
+                    document.getElementById('distribucion-departamentos').innerHTML = 
+                        renderDistribucionDepartamentos(departamentosData);
+                }
+                
+                // Resetear formulario
+                this.reset();
+                document.getElementById('fecha-asignacion').value = today;
+                
+                alert('Activo asignado exitosamente');
+            });
+            
+            // Botón nuevo activo
+            document.getElementById('btn-nuevo-activo').addEventListener('click', function() {
+                alert('Funcionalidad de nuevo activo - En un sistema real, se abriría un formulario modal');
+            });
+            
+            // Botón nuevo modelo
+            document.getElementById('btn-nuevo-modelo').addEventListener('click', function() {
+                alert('Funcionalidad de nuevo modelo - En un sistema real, se abriría un formulario modal');
+            });
+            
+            // Manejo delegado de eventos para botones de acción en tablas
+            document.addEventListener('click', function(e) {
+                // Botones de editar
+                if (e.target.closest('button')?.title === 'Editar') {
+                    const row = e.target.closest('tr');
+                    const nombre = row.querySelector('.font-medium').textContent;
+                    alert(`Editando: ${nombre}`);
+                }
+                
+                // Botones de eliminar
+                if (e.target.closest('button')?.title === 'Eliminar') {
+                    if (confirm('¿Está seguro de eliminar este elemento?')) {
+                        alert('Elemento eliminado (simulación)');
+                    }
+                }
+                
+                // Botones de reasignar
+                if (e.target.closest('button')?.title === 'Reasignar') {
+                    alert('Funcionalidad de reasignación');
+                }
+                
+                // Botones de liberar
+                if (e.target.closest('button')?.title === 'Liberar') {
+                    if (confirm('¿Liberar esta asignación?')) {
+                        alert('Asignación liberada (simulación)');
+                    }
+                }
+            });
+            
+            // Prevenir comportamiento por defecto de enlaces
+            document.addEventListener('click', function(event) {
+                const link = event.target.closest('a[href^="#"]');
+                if (link) {
+                    event.preventDefault();
+                    // En un sistema real, aquí iría la lógica de navegación
+                }
+            });
+        });
+    </script>
+</body>
+</html>
