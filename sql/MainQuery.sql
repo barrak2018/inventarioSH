@@ -3,6 +3,7 @@ show databases;
 
 use inventario_tecnologia;
 
+DROP TABLE IF EXISTS Modelos;
 create table Modelos (
 ID_Modelo int primary key auto_increment,
 Marca varchar(50),
@@ -13,6 +14,7 @@ Fin_soporte date,
 Especificaciones varchar(255)
 
 );
+DROP TABLE IF EXISTS Activos;
 create table Activos (
 ID_Activo int primary key auto_increment,
 N_Serial varchar(50) unique,
@@ -27,7 +29,7 @@ Observaciones varchar(255),
 FOREIGN key (ID_Modelo) references Modelos(ID_Modelo)
 );
 
-
+drop table if exists Asignaciones;
 create table Asignaciones(
 ID_Asignacion int primary key auto_increment,
 Identificador varchar(50),
@@ -36,7 +38,9 @@ Ultimo_Soporte date,
 ID_Activo int unique not null,
 foreign key (ID_Activo) references Activos(ID_Activo)
 );
+
 show tables;
+
 DELIMITER //
 
 CREATE TRIGGER tr_activo_asignado
