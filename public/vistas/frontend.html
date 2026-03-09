@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Control de Inventario</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">  
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="../js/tailwind_config.js"></script>
+    <link rel="stylesheet" href="../css/frontend.css">
+</head>
+<body class="min-h-screen bg-gray-50 font-sans">
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-primary p-2 rounded-lg">
+                        <i class="fas fa-boxes text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-dark">Gestión de Inventario</h1>
+                        <p class="text-xs text-secondary">Panel de Control Administrativo</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative hidden md:block">
+                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" placeholder="Buscar activo..." class="pl-10 pr-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-primary outline-none transition w-64">
+                    </div>
+                    <button class="p-2 text-secondary hover:bg-gray-100 rounded-full transition">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <div class="flex items-center space-x-2 pl-4 border-l">
+                        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">AD</div>
+                        <span class="text-sm font-medium text-dark hidden sm:inline-block">Admin</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="mb-8 overflow-x-auto">
+            <nav class="flex space-x-1 bg-gray-200/50 p-1 rounded-xl w-fit">
+                <button class="tab-btn px-6 py-2.5 rounded-lg text-sm font-medium transition active" data-tab="dashboard">
+                    <i class="fas fa-chart-line mr-2"></i>Dashboard
+                </button>
+                <button class="tab-btn px-6 py-2.5 rounded-lg text-sm font-medium transition text-secondary hover:bg-white/50" data-tab="activos">
+                    <i class="fas fa-laptop mr-2"></i>Activos
+                </button>
+                <button class="tab-btn px-6 py-2.5 rounded-lg text-sm font-medium transition text-secondary hover:bg-white/50" data-tab="modelos">
+                    <i class="fas fa-layer-group mr-2"></i>Modelos
+                </button>
+                <button class="tab-btn px-6 py-2.5 rounded-lg text-sm font-medium transition text-secondary hover:bg-white/50" data-tab="asignacion">
+                    <i class="fas fa-user-tag mr-2"></i>Asignación
+                </button>
+            </nav>
+        </div>
+
+        <div id="dashboard" class="tab-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="stat-card p-6 bg-white rounded-xl shadow-sm border border-gray-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-blue-50 p-3 rounded-lg text-primary"><i class="fas fa-laptop-code text-xl"></i></div>
+                        <span class="text-xs font-bold text-success">+12% <i class="fas fa-arrow-up"></i></span>
+                    </div>
+                    <p class="text-sm text-secondary font-medium">Total Activos</p>
+                    <h3 class="text-2xl font-bold text-dark mt-1">1,284</h3>
+                </div>
+                </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border">
+                    <h4 class="font-bold text-dark mb-6">Distribución por Categoría</h4>
+                    <canvas id="categoryChart" height="250"></canvas>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border">
+                    <h4 class="font-bold text-dark mb-6">Estado de Activos</h4>
+                    <canvas id="statusChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div id="activos" class="tab-content hidden">
+            <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
+                <div class="p-6 border-b flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <h4 class="font-bold text-dark">Inventario de Activos</h4>
+                    <button class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition">
+                        <i class="fas fa-plus mr-2"></i>Nuevo Activo
+                    </button>
+                </div>
+                <div class="overflow-x-auto" id="tablaActivos"></div>
+            </div>
+        </div>
+
+        <div id="modelos" class="tab-content hidden">
+            <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
+                <div class="p-6 border-b flex justify-between items-center">
+                    <h4 class="font-bold text-dark">Catálogo de Modelos</h4>
+                    <button class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition">
+                        <i class="fas fa-plus mr-2"></i>Nuevo Modelo
+                    </button>
+                </div>
+                <div class="overflow-x-auto" id="tablaModelos"></div>
+            </div>
+        </div>
+
+        <div id="asignacion" class="tab-content hidden">
+            <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
+                <div class="p-6 border-b flex justify-between items-center">
+                    <h4 class="font-bold text-dark">Historial de Asignaciones</h4>
+                    <button class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition">
+                        <i class="fas fa-plus mr-2"></i>Nueva Asignación
+                    </button>
+                </div>
+                <div class="overflow-x-auto" id="tablaAsignaciones"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/frontend.js"></script>
+</body>
+</html>

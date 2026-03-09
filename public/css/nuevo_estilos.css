@@ -1,0 +1,28 @@
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.input-error {
+    border-color: #ef4444 !important;
+}
+
+.error-message {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.success-message {
+    background-color: #10b981;
+    color: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+    display: none;
+}
+
+/* Estilo para los campos dinámicos de características */
+.caracteristica-field {
+    transition: all 0.3s ease;
+}
