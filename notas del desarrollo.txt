@@ -1,4 +1,0 @@
-el inventario que se esta desarrollando para seguros horizonte tendra como identificador para las asignaciones el la persona que usa el equipo y la gerencia a la que pertenece, en caso de que el equipo no este asignado especificamente a una persona le sera asignado al gerente, la conexion con el directorio activo aun esta por verse.
-
-
-las especificaciones de los equipos sera llevadas a cabo por categoria en la tabla se modelos se guardara la informacion de las caracteristicas en formato JSON
