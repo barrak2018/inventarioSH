@@ -1,68 +1,90 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Prueba de Registro - API Inventario</title>
     <style>
-        body { font-family: sans-serif; margin: 20px; }
-        .container { max-width: 400px; display: flex; flex-direction: column; gap: 10px; }
-        input, button { padding: 10px; }
-        #respuesta { margin-top: 20px; padding: 10px; border: 1px solid #ccc; background: #f9f9f9; }
+      body {
+        font-family: sans-serif;
+        margin: 20px;
+      }
+      .container {
+        max-width: 400px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      input,
+      button {
+        padding: 10px;
+      }
+      #respuesta {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        background: #f9f9f9;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <h2>Crear Nuevo Activo</h2>
-    
+
     <div class="container">
-        <input type="text" id="nombre" placeholder="Nombre del Activo (ej: Laptop Dell)">
-        <input type="text" id="serial" placeholder="Número de Serial">
-        <input type="number" id="modeloId" placeholder="ID del Modelo (Existente)">
-        <input type="text" id="estado" placeholder="Estado (ej: Nuevo)">
-        <button onclick="enviarDatos()">Enviar a la API</button>
+      <input
+        type="text"
+        id="nombre"
+        placeholder="Nombre del Activo (ej: Laptop Dell)"
+      />
+      <input type="text" id="serial" placeholder="Número de Serial" />
+      <input
+        type="number"
+        id="modeloId"
+        placeholder="ID del Modelo (Existente)"
+      />
+      <input type="text" id="estado" placeholder="Estado (ej: Nuevo)" />
+      <button onclick="enviarDatos()">Enviar a la API</button>
     </div>
 
     <div id="respuesta">Esperando respuesta...</div>
 
     <script>
-        async function enviarDatos() {
-            const url = './api/api.php?resource=activos'; // Asegúrate que la ruta sea correcta
-            const divRespuesta = document.getElementById('respuesta');
+      async function enviarDatos() {
+        const url = "./api/api.php?resource=activos"; // Asegúrate que la ruta sea correcta
+        const divRespuesta = document.getElementById("respuesta");
 
-            // 1. Recolectar datos del formulario
-            const datos = {
-                Nombre: document.getElementById('nombre').value,
-                N_Serial: document.getElementById('serial').value,
-                ID_Modelo: document.getElementById('modeloId').value,
-                Estado: document.getElementById('estado').value
-            };
+        // 1. Recolectar datos del formulario
+        const datos = {
+          Nombre: document.getElementById("nombre").value,
+          N_Serial: document.getElementById("serial").value,
+          ID_Modelo: document.getElementById("modeloId").value,
+          Estado: document.getElementById("estado").value,
+        };
 
-            try {
-                // 2. Realizar la petición POST
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json' // Cabecera necesaria para api.php
-                    },
-                    body: JSON.stringify(datos) // Convertir el objeto a texto JSON
-                });
+        try {
+          // 2. Realizar la petición POST
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json", // Cabecera necesaria para api.php
+            },
+            body: JSON.stringify(datos), // Convertir el objeto a texto JSON
+          });
 
-                const resultado = await response.json();
+          const resultado = await response.json();
 
-                // 3. Mostrar el resultado
-                if (response.ok) {
-                    divRespuesta.style.color = "green";
-                    divRespuesta.innerHTML = `<strong>Éxito:</strong> ${resultado.mensaje} <br> ID Generado: ${resultado.id}`;
-                } else {
-                    divRespuesta.style.color = "red";
-                    divRespuesta.innerHTML = `<strong>Error:</strong> ${resultado.error}`;
-                }
-
-            } catch (error) {
-                divRespuesta.style.color = "red";
-                divRespuesta.innerHTML = "Error de conexión: " + error.message;
-            }
+          // 3. Mostrar el resultado
+          if (response.ok) {
+            divRespuesta.style.color = "green";
+            divRespuesta.innerHTML = `<strong>Éxito:</strong> ${resultado.mensaje} <br> ID Generado: ${resultado.id}`;
+          } else {
+            divRespuesta.style.color = "red";
+            divRespuesta.innerHTML = `<strong>Error:</strong> ${resultado.error}`;
+          }
+        } catch (error) {
+          divRespuesta.style.color = "red";
+          divRespuesta.innerHTML = "Error de conexión: " + error.message;
         }
+      }
     </script>
-</body>
+  </body>
 </html>
