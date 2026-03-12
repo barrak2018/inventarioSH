@@ -6,7 +6,8 @@ function validarEstructuraDB($tabla, $campo = null) {
     $esquema = [
         "modelos" => ["ID_Modelo", "Marca", "Modelo", "Categoria", "Fecha_produccion", "Fin_soporte", "Especificaciones"],
         "activos" => ["ID_Activo", "N_Serial", "ID_Modelo", "Estado", "Nombre", "Fecha_compra", "Garantia", "Modificado", "Observaciones"],
-        "asignaciones" => ["ID_Asignacion", "Identificador", "Fecha_Asignacion", "Ultimo_Soporte", "ID_Activo"]
+        "asignaciones" => ["ID_Asignacion", "Identificador", "Fecha_Asignacion", "Ultimo_Soporte", "ID_Activo"],
+        "categorias" => ["ID_Categoria", "Nombre"]
     ];
     if (!array_key_exists($tabla, $esquema)) return false;
     if ($campo !== null && !in_array($campo, $esquema[$tabla])) return false;

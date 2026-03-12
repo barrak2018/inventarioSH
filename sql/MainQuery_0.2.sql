@@ -25,6 +25,16 @@ CREATE TABLE IF NOT EXISTS `modelos` (
 ) ENGINE = InnoDB AUTO_INCREMENT = 3;
 
 -- -----------------------------------------------------
+-- Table `Caracteristicas`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Categorias` (
+  `ID_Categoria` INT(11) NOT NULL AUTO_INCREMENT,
+  `Nombre` VARCHAR(50) NULL DEFAULT NULL,
+  
+  PRIMARY KEY (`ID_Categoria`)
+) ENGINE = InnoDB AUTO_INCREMENT = 3;
+
+-- -----------------------------------------------------
 -- Table `activos`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `activos` (

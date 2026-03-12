@@ -1,32 +1,26 @@
 // ==================== CAPA DE DATOS ====================
-const tiposActivo = [
-    { "id": 1, "nombre": "Computadora" },
-    { "id": 2, "nombre": "Teclado" },
-    { "id": 3, "nombre": "Mouse" },
-    { "id": 4, "nombre": "Monitor" },
-    { "id": 5, "nombre": "Teléfono" },
-    { "id": 6, "nombre": "Router" },
-    { "id": 7, "nombre": "Servidor" },
-    { "id": 8, "nombre": "Switch" },
-    { "id": 9, "nombre": "Firewall" },
-    { "id": 10, "nombre": "Impresora" }
-];
+import { InventoryService } from './inventoryService.js';
+// Usamos la importación de JSON con la sintaxis moderna
+import config from './config.json' with { type: 'json' };
 
+const db = new InventoryService(config.inventoryAPI_url);
+
+// Variables globales para almacenar los datos del servidor
+let tiposActivo = [];
+
+// Datos estáticos para el resto de los campos
 const categorias = [
-    { "id": 1, "nombre": "Hardware" },
+    { "id": 1, "nombre": "Hardware" }, 
     { "id": 2, "nombre": "Redes" },
     { "id": 3, "nombre": "Seguridad" },
-    { "id": 4, "nombre": "Almacenamiento" },
-    { "id": 5, "nombre": "Periféricos" },
-    { "id": 6, "nombre": "Comunicación" }
+    { "id": 4, "nombre": "Almacenamiento" }
 ];
 
 const fabricantes = [
-    { "id": 1, "nombre": "Dell" }, { "id": 2, "nombre": "HP" },
-    { "id": 3, "nombre": "Lenovo" }, { "id": 4, "nombre": "Cisco" },
-    { "id": 5, "nombre": "Fortinet" }, { "id": 6, "nombre": "Synology" },
-    { "id": 7, "nombre": "Ubiquiti" }, { "id": 8, "nombre": "Microsoft" },
-    { "id": 9, "nombre": "Apple" }, { "id": 10, "nombre": "Asus" }
+    { "id": 1, "nombre": "Dell" }, 
+    { "id": 2, "nombre": "HP" },
+    { "id": 3, "nombre": "Lenovo" }, 
+    { "id": 4, "nombre": "Cisco" }
 ];
 
 const caracteristicasEjemplo = [
@@ -38,7 +32,9 @@ const caracteristicasEjemplo = [
 // ==================== FUNCIONES DE RENDERIZADO ====================
 
 function renderOptions(data) {
-    return data.map(item => `<option value="${item.id}">${item.nombre}</option>`).join("");
+    // Verificamos que 'data' sea un array para evitar errores si la API falla
+    if (!Array.isArray(data)) return "";
+    return data.map(item => `<option value="${item.id || item.ID_Modelo}">${item.nombre || item.Modelo}</option>`).join("");
 }
 
 function renderCaracteristicaField(id, nombre = "", valor = "") {
@@ -70,10 +66,27 @@ function renderEjemplos(caracts) {
     `).join("");
 }
 
-// ==================== INICIALIZACIÓN Y EVENTOS ====================
+// ==================== INICIALIZACIÓN ASÍNCRONA ====================
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Poblar Selects
+// Convertimos el callback de DOMContentLoaded en async para usar await
+document.addEventListener('DOMContentLoaded', async function() {
+    
+    // 1. Carga de datos desde la API
+    try {
+        // En tu crud.php el recurso se llama 'modelos'
+        tiposActivo = await db.getAll('modelos');
+        
+        if (tiposActivo.length === 0) {
+            console.warn('No se encontraron modelos. Verifica la base de datos.');
+        }
+    } catch (error) {
+        console.error("Error al cargar datos de la API:", error);
+        // Opcional: Cargar datos de respaldo si la API falla
+        tiposActivo = [{ id: 0, nombre: "Error al cargar modelos" }];
+    }
+
+    // 2. Poblar los Selects
+    // Ahora 'tiposActivo' ya tiene los datos reales gracias al 'await'
     document.getElementById('tipoActivo').innerHTML += renderOptions(tiposActivo);
     document.getElementById('categoria').innerHTML += renderOptions(categorias);
     document.getElementById('fabricante').innerHTML += renderOptions(fabricantes);
@@ -83,7 +96,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let counter = 1;
 
-    // Agregar Característica
+    // --- MANEJO DE EVENTOS ---
+
+    // Agregar Característica Manual
     document.getElementById('btnAgregarCaracteristica').addEventListener('click', () => {
         counter++;
         container.insertAdjacentHTML('beforeend', renderCaracteristicaField(counter));
@@ -104,19 +119,38 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Envío del Formulario
-    document.getElementById('formNuevoModelo').addEventListener('submit', function(e) {
+    document.getElementById('formNuevoModelo').addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Simulación de éxito
-        const success = document.getElementById('successMessage');
-        success.style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Recopilar características dinámicas
+        const specs = Array.from(document.querySelectorAll('.caracteristica-field')).map(div => ({
+            nombre: div.querySelector('.nombre-caracteristica').value,
+            valor: div.querySelector('.valor-caracteristica').value
+        }));
 
-        setTimeout(() => {
-            this.reset();
-            success.style.display = 'none';
-            container.innerHTML = renderEjemplos(caracteristicasEjemplo);
-        }, 3000);
+        const payload = {
+            Marca: document.getElementById('fabricante').value,
+            Modelo: document.getElementById('nombreModelo').value, // Verifica que este ID exista en tu HTML
+            Categoria: document.getElementById('categoria').value,
+            Especificaciones: JSON.stringify(specs)
+        };
+
+        try {
+            const result = await db.create('modelos', payload);
+            if (result) {
+                const success = document.getElementById('successMessage');
+                success.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                setTimeout(() => {
+                    this.reset();
+                    success.style.display = 'none';
+                    container.innerHTML = renderEjemplos(caracteristicasEjemplo);
+                }, 3000);
+            }
+        } catch (err) {
+            alert("Error al guardar el modelo: " + err.message);
+        }
     });
 
     // Cancelar
