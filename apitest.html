@@ -1,90 +1,661 @@
 <!doctype html>
+
 <html lang="es">
   <head>
-    <meta charset="UTF-8" />
-    <title>Prueba de Registro - API Inventario</title>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Gestion y control SH - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#137fec",
+              "background-light": "#f6f7f8",
+              "background-dark": "#101922",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
     <style>
       body {
-        font-family: sans-serif;
-        margin: 20px;
+        font-family: "Inter", sans-serif;
       }
-      .container {
-        max-width: 400px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-      input,
-      button {
-        padding: 10px;
-      }
-      #respuesta {
-        margin-top: 20px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        background: #f9f9f9;
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
       }
     </style>
   </head>
-  <body>
-    <h2>Crear Nuevo Activo</h2>
-
-    <div class="container">
-      <input
-        type="text"
-        id="nombre"
-        placeholder="Nombre del Activo (ej: Laptop Dell)"
-      />
-      <input type="text" id="serial" placeholder="Número de Serial" />
-      <input
-        type="number"
-        id="modeloId"
-        placeholder="ID del Modelo (Existente)"
-      />
-      <input type="text" id="estado" placeholder="Estado (ej: Nuevo)" />
-      <button onclick="enviarDatos()">Enviar a la API</button>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display"
+  >
+    <div class="flex h-screen overflow-hidden">
+      <!-- Sidebar -->
+      <aside
+        class="w-72 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col"
+      >
+        <div class="p-6 flex items-center gap-3">
+          <div
+            class="size-10 rounded-lg bg-primary flex items-center justify-center text-white"
+          >
+            <span class="material-symbols-outlined">shield_with_heart</span>
+          </div>
+          <div class="flex flex-col">
+            <h1
+              class="text-slate-900 dark:text-white text-base font-bold leading-tight"
+            >
+              Gestion y control SH
+            </h1>
+            <p
+              class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider"
+            >
+              Admin Panel
+            </p>
+          </div>
+        </div>
+        <nav class="flex-1 px-4 py-4 space-y-1">
+          <a
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary font-semibold transition-colors"
+            href="#"
+          >
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="text-sm">Inicio</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            href="#"
+          >
+            <span class="material-symbols-outlined">inventory_2</span>
+            <span class="text-sm">Gestion de Activos</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            href="#"
+          >
+            <span class="material-symbols-outlined">build</span>
+            <span class="text-sm">Mantenimiento y soporte</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            href="#"
+          >
+            <span class="material-symbols-outlined">analytics</span>
+            <span class="text-sm">Gestion y Analisis</span>
+          </a>
+        </nav>
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+          <div
+            class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition-colors"
+          >
+            <div
+              class="size-9 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden"
+            >
+              <img
+                class="w-full h-full object-cover"
+                data-alt="User profile photo of a smiling professional"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWdUjwxhSiHDfVP8SHl-P6ez38vkPQkz46lbxxBTZPEQ2esMNKy8EJcJGIob-56exjI6tsw8_67hhYi3L22xCrfy42mrGCM45je2QTSWRdOWZP3Vf6R8Zx5wCj438becIQZa0trjcQTW6JHP3vhN3t1aSxwr93sWM8IdNU_tgiZXCVln0EwzkVEMBEzwUL4hZK1tpAcJhXO34zV1KbEaWUI9bL2xDzry21S6A_YMmCGaia5bEEdSds-dBD_2OdYlBs7sA4YZGvp7U"
+              />
+            </div>
+            <div class="flex-1 min-w-0">
+              <p
+                class="text-sm font-semibold text-slate-900 dark:text-white truncate"
+              >
+                Alejandro Ruiz
+              </p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 truncate">
+                Super Admin
+              </p>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 text-sm"
+              >logout</span
+            >
+          </div>
+        </div>
+      </aside>
+      <!-- Main Content -->
+      <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <!-- Header -->
+        <header
+          class="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 z-10"
+        >
+          <div class="flex items-center gap-4">
+            <h2 class="text-xl font-bold text-slate-900 dark:text-white">
+              Inicio
+            </h2>
+          </div>
+          <div class="flex items-center gap-6">
+            <div class="relative max-w-md hidden md:block">
+              <span
+                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg"
+                >search</span
+              >
+              <input
+                class="w-64 pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-800 border-transparent focus:border-primary focus:ring-0 rounded-lg text-sm transition-all"
+                placeholder="Buscar activos, tareas..."
+                type="text"
+              />
+            </div>
+            <div class="flex items-center gap-2">
+              <button
+                class="size-10 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400"
+              >
+                <span class="material-symbols-outlined">notifications</span>
+              </button>
+              <button
+                class="size-10 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400"
+              >
+                <span class="material-symbols-outlined">settings</span>
+              </button>
+            </div>
+          </div>
+        </header>
+        <!-- Dashboard Content -->
+        <main
+          class="flex-1 overflow-y-auto p-8 bg-background-light dark:bg-background-dark"
+        >
+          <div class="max-w-7xl mx-auto space-y-8">
+            <!-- Welcome Section -->
+            <div class="flex flex-col gap-1">
+              <h3
+                class="text-3xl font-black text-slate-900 dark:text-white tracking-tight"
+              >
+                Dashboard Principal
+              </h3>
+              <p class="text-slate-500 dark:text-slate-400 text-base">
+                Bienvenido al sistema de gestión y control SH. Aquí está el
+                resumen de hoy.
+              </p>
+            </div>
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div
+                class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm"
+              >
+                <div class="flex items-center justify-between mb-4">
+                  <span
+                    class="text-slate-500 dark:text-slate-400 text-sm font-medium"
+                    >Activos Totales</span
+                  >
+                  <span class="material-symbols-outlined text-primary"
+                    >inventory</span
+                  >
+                </div>
+                <div class="flex items-end gap-2">
+                  <span
+                    class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight"
+                    >1,284</span
+                  >
+                  <span
+                    class="text-emerald-500 text-sm font-bold pb-1 flex items-center"
+                    ><span class="material-symbols-outlined text-xs"
+                      >trending_up</span
+                    >
+                    2.5%</span
+                  >
+                </div>
+              </div>
+              <div
+                class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm"
+              >
+                <div class="flex items-center justify-between mb-4">
+                  <span
+                    class="text-slate-500 dark:text-slate-400 text-sm font-medium"
+                    >Mantenimientos</span
+                  >
+                  <span class="material-symbols-outlined text-amber-500"
+                    >pending_actions</span
+                  >
+                </div>
+                <div class="flex items-end gap-2">
+                  <span
+                    class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight"
+                    >12</span
+                  >
+                  <span
+                    class="text-rose-500 text-sm font-bold pb-1 flex items-center"
+                    ><span class="material-symbols-outlined text-xs"
+                      >trending_down</span
+                    >
+                    5%</span
+                  >
+                </div>
+              </div>
+              <div
+                class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm"
+              >
+                <div class="flex items-center justify-between mb-4">
+                  <span
+                    class="text-slate-500 dark:text-slate-400 text-sm font-medium"
+                    >Soporte Activo</span
+                  >
+                  <span class="material-symbols-outlined text-primary"
+                    >support_agent</span
+                  >
+                </div>
+                <div class="flex items-end gap-2">
+                  <span
+                    class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight"
+                    >5</span
+                  >
+                  <span
+                    class="text-rose-500 text-sm font-bold pb-1 flex items-center"
+                    ><span class="material-symbols-outlined text-xs"
+                      >remove</span
+                    >
+                    2%</span
+                  >
+                </div>
+              </div>
+              <div
+                class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm"
+              >
+                <div class="flex items-center justify-between mb-4">
+                  <span
+                    class="text-slate-500 dark:text-slate-400 text-sm font-medium"
+                    >Eficiencia Sist.</span
+                  >
+                  <span class="material-symbols-outlined text-emerald-500"
+                    >bolt</span
+                  >
+                </div>
+                <div class="flex items-end gap-2">
+                  <span
+                    class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight"
+                    >94%</span
+                  >
+                  <span
+                    class="text-emerald-500 text-sm font-bold pb-1 flex items-center"
+                    ><span class="material-symbols-outlined text-xs"
+                      >trending_up</span
+                    >
+                    1%</span
+                  >
+                </div>
+              </div>
+            </div>
+            <!-- Main Data Table Section -->
+            <div
+              class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden"
+            >
+              <div
+                class="px-6 py-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between"
+              >
+                <h4 class="text-lg font-bold text-slate-900 dark:text-white">
+                  Resumen de Activos Recientes
+                </h4>
+                <button class="text-primary text-sm font-bold hover:underline">
+                  Ver todos los activos
+                </button>
+              </div>
+              <div class="overflow-x-auto">
+                <table id="activos" class="w-full text-left">
+                  <thead>
+                    <tr class="bg-slate-50 dark:bg-slate-800/50">
+                      <th
+                        class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                      >
+                        Activo
+                      </th>
+                      <th
+                        class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                      >
+                        Identificador
+                      </th>
+                      <th
+                        class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                      >
+                        Categoría
+                      </th>
+                      <th
+                        class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                      >
+                        Estado
+                      </th>
+                      <th
+                        class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                      >
+                        Ubicación
+                      </th>
+                      <th
+                        class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                      >
+                        Acciones
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    class="divide-y divide-slate-200 dark:divide-slate-800"
+                  >
+                    <tr
+                      class="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    >
+                      <td class="px-6 py-4 flex items-center gap-3">
+                        <div
+                          class="size-8 rounded bg-primary/20 flex items-center justify-center text-primary"
+                        >
+                          <span class="material-symbols-outlined text-sm"
+                            >laptop_mac</span
+                          >
+                        </div>
+                        <span
+                          class="text-sm font-semibold text-slate-900 dark:text-white"
+                          >MacBook Pro M2</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400"
+                      >
+                        #SH-2023-001
+                      </td>
+                      <td
+                        class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400"
+                      >
+                        Hardware
+                      </td>
+                      <td class="px-6 py-4">
+                        <span
+                          class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                          >Operativo</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400"
+                      >
+                        Oficina Principal
+                      </td>
+                      <td class="px-6 py-4">
+                        <button
+                          class="text-slate-400 hover:text-primary transition-colors"
+                        >
+                          <span class="material-symbols-outlined"
+                            >more_horiz</span
+                          >
+                        </button>
+                      </td>
+                    </tr>
+                    <tr
+                      class="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    >
+                      <td class="px-6 py-4 flex items-center gap-3">
+                        <div
+                          class="size-8 rounded bg-primary/20 flex items-center justify-center text-primary"
+                        >
+                          <span class="material-symbols-outlined text-sm"
+                            >dns</span
+                          >
+                        </div>
+                        <span
+                          class="text-sm font-semibold text-slate-900 dark:text-white"
+                          >Servidor DB-01</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400"
+                      >
+                        #SH-2023-045
+                      </td>
+                      <td
+                        class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400"
+                      >
+                        Infraestructura
+                      </td>
+                      <td class="px-6 py-4">
+                        <span
+                          class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                          >Mantenimiento</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400"
+                      >
+                        Data Center A
+                      </td>
+                      <td class="px-6 py-4">
+                        <button
+                          class="text-slate-400 hover:text-primary transition-colors"
+                        >
+                          <span class="material-symbols-outlined"
+                            >more_horiz</span
+                          >
+                        </button>
+                      </td>
+                    </tr>
+                    <tr
+                      class="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    >
+                      <td class="px-6 py-4 flex items-center gap-3">
+                        <div
+                          class="size-8 rounded bg-primary/20 flex items-center justify-center text-primary"
+                        >
+                          <span class="material-symbols-outlined text-sm"
+                            >print</span
+                          >
+                        </div>
+                        <span
+                          class="text-sm font-semibold text-slate-900 dark:text-white"
+                          >Plotter HP Z9</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400"
+                      >
+                        #SH-2023-012
+                      </td>
+                      <td
+                        class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400"
+                      >
+                        Periféricos
+                      </td>
+                      <td class="px-6 py-4">
+                        <span
+                          class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                          >Operativo</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400"
+                      >
+                        Taller de Diseño
+                      </td>
+                      <td class="px-6 py-4">
+                        <button
+                          class="text-slate-400 hover:text-primary transition-colors"
+                        >
+                          <span class="material-symbols-outlined"
+                            >more_horiz</span
+                          >
+                        </button>
+                      </td>
+                    </tr>
+                    <tr
+                      class="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    >
+                      <td class="px-6 py-4 flex items-center gap-3">
+                        <div
+                          class="size-8 rounded bg-primary/20 flex items-center justify-center text-primary"
+                        >
+                          <span class="material-symbols-outlined text-sm"
+                            >router</span
+                          >
+                        </div>
+                        <span
+                          class="text-sm font-semibold text-slate-900 dark:text-white"
+                          >Router Cisco 4000</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400"
+                      >
+                        #SH-2023-089
+                      </td>
+                      <td
+                        class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400"
+                      >
+                        Redes
+                      </td>
+                      <td class="px-6 py-4">
+                        <span
+                          class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-rose-100 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400"
+                          >Inactivo</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400"
+                      >
+                        Almacén B
+                      </td>
+                      <td class="px-6 py-4">
+                        <button
+                          class="text-slate-400 hover:text-primary transition-colors"
+                        >
+                          <span class="material-symbols-outlined"
+                            >more_horiz</span
+                          >
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- Secondary Section: Support & Maintenance -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <!-- Maintenance Schedule -->
+              <div
+                class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6"
+              >
+                <h4
+                  class="text-lg font-bold text-slate-900 dark:text-white mb-4"
+                >
+                  Próximos Mantenimientos
+                </h4>
+                <div class="space-y-4">
+                  <div
+                    class="flex items-center gap-4 p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800"
+                  >
+                    <div class="bg-amber-500/10 text-amber-600 p-2 rounded-lg">
+                      <span class="material-symbols-outlined"
+                        >calendar_today</span
+                      >
+                    </div>
+                    <div class="flex-1">
+                      <p
+                        class="text-sm font-bold text-slate-900 dark:text-white"
+                      >
+                        Revisión Preventiva Servidores
+                      </p>
+                      <p class="text-xs text-slate-500 dark:text-slate-400">
+                        Programado para mañana, 09:00 AM
+                      </p>
+                    </div>
+                    <span
+                      class="material-symbols-outlined text-slate-400 text-sm"
+                      >arrow_forward_ios</span
+                    >
+                  </div>
+                  <div
+                    class="flex items-center gap-4 p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800"
+                  >
+                    <div class="bg-primary/10 text-primary p-2 rounded-lg">
+                      <span class="material-symbols-outlined"
+                        >calendar_today</span
+                      >
+                    </div>
+                    <div class="flex-1">
+                      <p
+                        class="text-sm font-bold text-slate-900 dark:text-white"
+                      >
+                        Actualización Firmware Red
+                      </p>
+                      <p class="text-xs text-slate-500 dark:text-slate-400">
+                        Programado para el Viernes
+                      </p>
+                    </div>
+                    <span
+                      class="material-symbols-outlined text-slate-400 text-sm"
+                      >arrow_forward_ios</span
+                    >
+                  </div>
+                </div>
+              </div>
+              <!-- System Alerts -->
+              <div
+                class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6"
+              >
+                <h4
+                  class="text-lg font-bold text-slate-900 dark:text-white mb-4"
+                >
+                  Alertas del Sistema
+                </h4>
+                <div class="space-y-4">
+                  <div
+                    class="flex items-start gap-4 p-4 rounded-lg border border-rose-100 dark:border-rose-900/30 bg-rose-50 dark:bg-rose-500/5"
+                  >
+                    <span class="material-symbols-outlined text-rose-500"
+                      >warning</span
+                    >
+                    <div>
+                      <p
+                        class="text-sm font-bold text-rose-900 dark:text-rose-400"
+                      >
+                        Espacio en disco bajo
+                      </p>
+                      <p class="text-xs text-rose-800/70 dark:text-rose-400/70">
+                        El servidor Backup-02 está al 92% de su capacidad.
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="flex items-start gap-4 p-4 rounded-lg border border-primary/20 bg-primary/5"
+                  >
+                    <span class="material-symbols-outlined text-primary"
+                      >info</span
+                    >
+                    <div>
+                      <p
+                        class="text-sm font-bold text-primary dark:text-primary/90"
+                      >
+                        Nueva solicitud de soporte
+                      </p>
+                      <p class="text-xs text-primary/70 dark:text-primary/70">
+                        Usuario 'J. García' ha solicitado asistencia técnica.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
     </div>
-
-    <div id="respuesta">Esperando respuesta...</div>
-
-    <script>
-      async function enviarDatos() {
-        const url = "./api/api.php?resource=activos"; // Asegúrate que la ruta sea correcta
-        const divRespuesta = document.getElementById("respuesta");
-
-        // 1. Recolectar datos del formulario
-        const datos = {
-          Nombre: document.getElementById("nombre").value,
-          N_Serial: document.getElementById("serial").value,
-          ID_Modelo: document.getElementById("modeloId").value,
-          Estado: document.getElementById("estado").value,
-        };
-
-        try {
-          // 2. Realizar la petición POST
-          const response = await fetch(url, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json", // Cabecera necesaria para api.php
-            },
-            body: JSON.stringify(datos), // Convertir el objeto a texto JSON
-          });
-
-          const resultado = await response.json();
-
-          // 3. Mostrar el resultado
-          if (response.ok) {
-            divRespuesta.style.color = "green";
-            divRespuesta.innerHTML = `<strong>Éxito:</strong> ${resultado.mensaje} <br> ID Generado: ${resultado.id}`;
-          } else {
-            divRespuesta.style.color = "red";
-            divRespuesta.innerHTML = `<strong>Error:</strong> ${resultado.error}`;
-          }
-        } catch (error) {
-          divRespuesta.style.color = "red";
-          divRespuesta.innerHTML = "Error de conexión: " + error.message;
-        }
-      }
-    </script>
   </body>
 </html>
