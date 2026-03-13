@@ -1,9 +1,9 @@
 // Capa de Datos
-const navigationItems = [
-    { "icon": "fas fa-tachometer-alt", "label": "Dashboard", "active": true, "badge": "" },
-    { "icon": "fas fa-boxes", "label": "Inventory", "active": false, "badge": "" },
-    { "icon": "fas fa-chart-bar", "label": "Analytics", "active": false, "badge": "" },
-    { "icon": "fas fa-clipboard-list", "label": "Reports", "active": false, "badge": "" },
+let navigationItems = [
+    { "icon": "fas fa-tachometer-alt", "label": "Dashboard", "active": false, "badge": "", "path": "/inventarioSH/public/vistas/_index.html" },
+    { "icon": "fas fa-boxes", "label": "Inventory", "active": false, "badge": "", "path": "/inventarioSH/public/vistas/inventario.html" },
+    { "icon": "fas fa-chart-bar", "label": "Analytics", "active": false, "badge": "", "path": "/inventarioSH/public/vistas/.html" },
+    { "icon": "fas fa-clipboard-list", "label": "Reports", "active": true, "badge": "", "path": "/inventarioSH/public/vistas/_x.html" },
 ];
 
 /**
@@ -24,7 +24,7 @@ function renderNavigationMenu(items) {
 
         return `
             <li>
-                <a href="#" class="flex items-center px-4 py-3 rounded-lg ${activeClass} transition-colors">
+                <a href="${item.path}" class="flex items-center px-4 py-3 rounded-lg ${activeClass} transition-colors">
                     <i class="${item.icon} mr-3"></i>
                     <span class="flex-1">${item.label}</span>
                     ${badge}
@@ -37,7 +37,18 @@ function renderNavigationMenu(items) {
         menuContainer.innerHTML = menuHTML;
     }
 }
+// manejador de rutas
+const _path = window.location.pathname;
+console.log(_path)
 
+navigationItems.forEach(item => {
+    if (item.path === _path) {
+        item.active = true;
+    }
+    else{
+        item.active = false;
+    }
+});
 // Inicializar la página cuando el DOM esté listo
 document.addEventListener("DOMContentLoaded", () => {
     renderNavigationMenu(navigationItems);
