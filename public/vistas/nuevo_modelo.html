@@ -1,159 +1,247 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nuevo Modelo - Sistema de Inventario</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: "#2563eb",
-                        secondary: "#475569",
-                        accent: "#0ea5e9",
-                        success: "#10b981",
-                        warning: "#f59e0b",
-                        danger: "#ef4444",
-                        dark: "#1e293b"
-                    },
-                    fontFamily: { 'sans': ['Inter', 'system-ui', 'sans-serif'] }
-                }
-            }
-        }
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2563eb",
+              secondary: "#475569",
+              accent: "#0ea5e9",
+              success: "#10b981",
+              warning: "#f59e0b",
+              danger: "#ef4444",
+              dark: "#1e293b",
+            },
+            fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] },
+          },
+        },
+      };
     </script>
-    <link rel="stylesheet" href="../css/nuevo_modelo.css">
-</head>
-<body class="min-h-screen bg-gray-50 font-sans">
+    <link rel="stylesheet" href="../css/nuevo_modelo.css" />
+  </head>
+  <body class="min-h-screen bg-gray-50 font-sans">
     <header class="bg-white shadow-sm">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <a href="#" class="flex items-center space-x-3 no-underline">
-                        <div class="bg-primary p-2 rounded-lg">
-                            <i class="fas fa-boxes text-white text-xl"></i>
-                        </div>
-                        <div>
-                            <h1 class="text-xl font-bold text-dark">Sistema de Inventario</h1>
-                            <p class="text-sm text-secondary">Gestión de modelos de activos</p>
-                        </div>
-                    </a>
-                </div>
-                <nav>
-                    <ul class="flex space-x-6">
-                        <li><a href="./frontend.html" class="text-secondary hover:text-primary transition">Inicio</a></li>
-                        <li><a href="./nuevo_activo.html" class="text-secondary hover:text-primary transition">Activos</a></li>
-                        <li><a href="./nuevo_modelo.html" class="text-primary font-medium">Modelos</a></li>
-                        <li><a href="#" class="text-secondary hover:text-primary transition">Asignación</a></li>
-                    </ul>
-                </nav>
-            </div>
+      <div class="container mx-auto px-4 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <a href="#" class="flex items-center space-x-3 no-underline">
+              <div class="bg-primary p-2 rounded-lg">
+                <i class="fas fa-boxes text-white text-xl"></i>
+              </div>
+              <div>
+                <h1 class="text-xl font-bold text-dark">
+                  Sistema de Inventario
+                </h1>
+                <p class="text-sm text-secondary">
+                  Gestión de modelos de activos
+                </p>
+              </div>
+            </a>
+          </div>
+          <nav>
+            <ul class="flex space-x-6">
+              <li>
+                <a
+                  href="./frontend.html"
+                  class="text-secondary hover:text-primary transition"
+                  >Inicio</a
+                >
+              </li>
+              <li>
+                <a
+                  href="./nuevo_activo.html"
+                  class="text-secondary hover:text-primary transition"
+                  >Activos</a
+                >
+              </li>
+              <li>
+                <a href="./nuevo_modelo.html" class="text-primary font-medium"
+                  >Modelos</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-secondary hover:text-primary transition"
+                  >Asignación</a
+                >
+              </li>
+            </ul>
+          </nav>
         </div>
+      </div>
     </header>
 
     <main class="container mx-auto px-4 py-8">
-        <div class="mb-8">
-            <div class="flex items-center space-x-4 mb-2">
-                <a href="#" class="text-primary hover:text-primary/80 transition">
-                    <i class="fas fa-arrow-left"></i> Volver
-                </a>
-                <h2 class="text-2xl font-bold text-dark">Agregar Nuevo Modelo</h2>
-            </div>
-            <p class="text-secondary">Complete el formulario para registrar un nuevo modelo en el sistema de inventario</p>
+      <div class="mb-8">
+        <div class="flex items-center space-x-4 mb-2">
+          <a href="./frontend.html" class="text-primary hover:text-primary/80 transition">
+            <i class="fas fa-arrow-left"></i> Volver
+          </a>
+          <h2 class="text-2xl font-bold text-dark">Agregar Nuevo Modelo</h2>
+        </div>
+        <p class="text-secondary">
+          Complete el formulario para registrar un nuevo modelo en el sistema de
+          inventario
+        </p>
+      </div>
+
+      <div id="successMessage" class="success-message">
+        <div class="flex items-center">
+          <i class="fas fa-check-circle mr-3 text-xl"></i>
+          <span>¡Modelo registrado exitosamente!</span>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow form-container">
+        <div class="px-8 py-6 border-b">
+          <h3 class="text-lg font-semibold text-dark">
+            Información del Modelo
+          </h3>
+          <p class="text-sm text-secondary mt-1">
+            Complete todos los campos obligatorios (*)
+          </p>
         </div>
 
-        <div id="successMessage" class="success-message">
-            <div class="flex items-center">
-                <i class="fas fa-check-circle mr-3 text-xl"></i>
-                <span>¡Modelo registrado exitosamente!</span>
+        <form id="formNuevoModelo" class="p-8 space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label
+                for="nombreModelo"
+                class="block text-sm font-medium text-secondary mb-2"
+                >Nombre del Modelo *</label
+              >
+              <input
+                type="text"
+                id="nombreModelo"
+                name="nombreModelo"
+                class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                placeholder="Ej: Dell PowerEdge R740"
+                required
+              />
+              <div id="errorNombre" class="error-message"></div>
             </div>
-        </div>
 
-        <div class="bg-white rounded-xl shadow form-container">
-            <div class="px-8 py-6 border-b">
-                <h3 class="text-lg font-semibold text-dark">Información del Modelo</h3>
-                <p class="text-sm text-secondary mt-1">Complete todos los campos obligatorios (*)</p>
+            <div>
+              <label
+                for="modelo"
+                class="block text-sm font-medium text-secondary mb-2"
+                >Modelo *</label
+              >
+              <input
+                type="text"
+                id="modelo"
+                name="modelo"
+                class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                placeholder="Ej: R740, ISR 4451, FG-100F"
+                required
+              />
+              <div id="errorModelo" class="error-message"></div>
             </div>
-            
-            <form id="formNuevoModelo" class="p-8 space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="nombreModelo" class="block text-sm font-medium text-secondary mb-2">Nombre del Modelo *</label>
-                        <input type="text" id="nombreModelo" name="nombreModelo" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition" placeholder="Ej: Dell PowerEdge R740" required>
-                        <div id="errorNombre" class="error-message"></div>
-                    </div>
 
-                    <div>
-                        <label for="tipoActivo" class="block text-sm font-medium text-secondary mb-2">Tipo de Activo *</label>
-                        <select id="tipoActivo" name="tipoActivo" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition" required>
-                            <option value="">Seleccione un tipo</option>
-                        </select>
-                        <div id="errorTipo" class="error-message"></div>
-                    </div>
+            <div>
+              <label
+                for="categoria"
+                class="block text-sm font-medium text-secondary mb-2"
+                >Categoría *</label
+              >
+              <select
+                id="categoria"
+                name="categoria"
+                class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                required
+              >
+                <option value="">Seleccione una categoría</option>
+              </select>
+              <div id="errorCategoria" class="error-message"></div>
+            </div>
 
-                    <div>
-                        <label for="modelo" class="block text-sm font-medium text-secondary mb-2">Modelo *</label>
-                        <input type="text" id="modelo" name="modelo" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition" placeholder="Ej: R740, ISR 4451, FG-100F" required>
-                        <div id="errorModelo" class="error-message"></div>
-                    </div>
+            <div>
+              <label
+                for="fabricante"
+                class="block text-sm font-medium text-secondary mb-2"
+                >Fabricante *</label
+              >
+              <input
+                type="text"
+                id="fabricante"
+                name="fabricante"
+                class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                placeholder="Ej: Dell, HP, Lenovo"
+                required
+              />
 
-                    <div>
-                        <label for="categoria" class="block text-sm font-medium text-secondary mb-2">Categoría *</label>
-                        <select id="categoria" name="categoria" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition" required>
-                            <option value="">Seleccione una categoría</option>
-                        </select>
-                        <div id="errorCategoria" class="error-message"></div>
-                    </div>
+              <div id="errorFabricante" class="error-message"></div>
+            </div>
+          </div>
 
-                    <div>
-                        <label for="fabricante" class="block text-sm font-medium text-secondary mb-2">Fabricante *</label>
-                        <select id="fabricante" name="fabricante" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition" required>
-                            <option value="">Seleccione un fabricante</option>
-                        </select>
-                        <div id="errorFabricante" class="error-message"></div>
-                    </div>
+          <div>
+            <label
+              for="especificaciones"
+              class="block text-sm font-medium text-secondary mb-2"
+              >Especificaciones Técnicas *</label
+            >
+            <textarea
+              id="especificaciones"
+              name="especificaciones"
+              rows="4"
+              class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+              placeholder="Ej: 2x Xeon Gold, 256GB RAM, 8x 1TB SSD..."
+              required
+            ></textarea>
+            <div id="errorEspecificaciones" class="error-message"></div>
+          </div>
 
-                    <div>
-                        <label for="imagenModelo" class="block text-sm font-medium text-secondary mb-2">Imagen del Modelo (URL)</label>
-                        <input type="url" id="imagenModelo" name="imagenModelo" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition" placeholder="https://ejemplo.com/imagen.jpg">
-                        <p class="text-xs text-gray-500 mt-2">Opcional. URL de la imagen del modelo</p>
-                    </div>
-                </div>
+          
 
-                <div>
-                    <label for="especificaciones" class="block text-sm font-medium text-secondary mb-2">Especificaciones Técnicas *</label>
-                    <textarea id="especificaciones" name="especificaciones" rows="4" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition" placeholder="Ej: 2x Xeon Gold, 256GB RAM, 8x 1TB SSD..." required></textarea>
-                    <div id="errorEspecificaciones" class="error-message"></div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-secondary mb-3">Características Adicionales</label>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="caracteristicas-container"></div>
-                    <button type="button" id="btnAgregarCaracteristica" class="mt-4 text-primary hover:text-primary/80 transition flex items-center space-x-2">
-                        <i class="fas fa-plus"></i><span>Agregar característica</span>
-                    </button>
-                </div>
-
-                <div class="flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4 pt-6 border-t">
-                    <button type="button" id="btnCancelar" class="px-6 py-3 border border-gray-300 text-secondary rounded-lg hover:bg-gray-50 transition">Cancelar</button>
-                    <button type="button" id="btnGuardarBorrador" class="px-6 py-3 border border-primary text-primary rounded-lg hover:bg-primary/5 transition">Guardar como Borrador</button>
-                    <button type="submit" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition flex items-center justify-center space-x-2">
-                        <i class="fas fa-save"></i><span>Guardar Modelo</span>
-                    </button>
-                </div>
-            </form>
-        </div>
+          <div
+            class="flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4 pt-6 border-t"
+          >
+            <button
+              type="button"
+              id="btnCancelar"
+              class="px-6 py-3 border border-gray-300 text-secondary rounded-lg hover:bg-gray-50 transition"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              id="btnGuardarBorrador"
+              class="px-6 py-3 border border-primary text-primary rounded-lg hover:bg-primary/5 transition"
+            >
+              Guardar como Borrador
+            </button>
+            <button
+              type="submit"
+              class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition flex items-center justify-center space-x-2"
+            >
+              <i class="fas fa-save"></i><span>Guardar Modelo</span>
+            </button>
+          </div>
+        </form>
+      </div>
     </main>
 
     <footer class="bg-dark text-white mt-12">
-        <div class="container mx-auto px-4 py-8 text-center">
-            <p class="text-gray-400">&copy; 2024 Sistema de Control de Inventario.</p>
-        </div>
+      <div class="container mx-auto px-4 py-8 text-center">
+        <p class="text-gray-400">
+          &copy; 2024 Sistema de Control de Inventario.
+        </p>
+      </div>
     </footer>
 
     <script type="module" src="../js/nuevo_modelo.js"></script>
-</body>
+  </body>
 </html>

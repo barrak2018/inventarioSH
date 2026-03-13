@@ -1,4 +1,4 @@
 {
-    "inventoryAPI_url": "http://localhost/api/inventory_manager.php",
+    "inventoryAPI_url": "http://localhost/inventarioSH/api/inventory_manager.php",
     "version": "1.0.0"
 }
