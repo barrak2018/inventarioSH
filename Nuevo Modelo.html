@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <base target="_self">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Modelo - Sistema de Inventario</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#2563eb",
+                        secondary: "#475569",
+                        accent: "#0ea5e9",
+                        success: "#10b981",
+                        warning: "#f59e0b",
+                        danger: "#ef4444",
+                        dark: "#1e293b"
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .input-error {
+            border-color: #ef4444;
+        }
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        .success-message {
+            background-color: #10b981;
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <a href="#" class="flex items-center space-x-3 no-underline">
+                        <div class="bg-primary p-2 rounded-lg">
+                            <i class="fas fa-boxes text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-dark">Sistema de Inventario</h1>
+                            <p class="text-sm text-secondary">Gestión de modelos de activos</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <nav>
+                    <ul class="flex space-x-6">
+                        <li><a href="#" class="text-secondary hover:text-primary transition">Inicio</a></li>
+                        <li><a href="#" class="text-secondary hover:text-primary transition">Activos</a></li>
+                        <li><a href="#" class="text-primary font-medium">Modelos</a></li>
+                        <li><a href="#" class="text-secondary hover:text-primary transition">Asignación</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="mb-8">
+            <div class="flex items-center space-x-4 mb-2">
+                <a href="#" class="text-primary hover:text-primary/80 transition">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+                <h2 class="text-2xl font-bold text-dark">Agregar Nuevo Modelo</h2>
+            </div>
+            <p class="text-secondary">Complete el formulario para registrar un nuevo modelo en el sistema de inventario</p>
+        </div>
+
+        <!-- Mensaje de éxito (oculto inicialmente) -->
+        <div id="successMessage" class="success-message">
+            <div class="flex items-center">
+                <i class="fas fa-check-circle mr-3 text-xl"></i>
+                <span>¡Modelo registrado exitosamente!</span>
+            </div>
+        </div>
+
+        <!-- Formulario -->
+        <div class="bg-white rounded-xl shadow form-container">
+            <div class="px-8 py-6 border-b">
+                <h3 class="text-lg font-semibold text-dark">Información del Modelo</h3>
+                <p class="text-sm text-secondary mt-1">Complete todos los campos obligatorios (*)</p>
+            </div>
+            
+            <form id="formNuevoModelo" class="p-8 space-y-6">
+                <!-- Datos del formulario -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Nombre del Modelo -->
+                    <div>
+                        <label for="nombreModelo" class="block text-sm font-medium text-secondary mb-2">
+                            Nombre del Modelo *
+                        </label>
+                        <input 
+                            type="text" 
+                            id="nombreModelo" 
+                            name="nombreModelo"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                            placeholder="Ej: Dell PowerEdge R740"
+                            required
+                        >
+                        <div id="errorNombre" class="error-message"></div>
+                    </div>
+
+                    <!-- Tipo de Activo -->
+                    <div>
+                        <label for="tipoActivo" class="block text-sm font-medium text-secondary mb-2">
+                            Tipo de Activo *
+                        </label>
+                        <select 
+                            id="tipoActivo" 
+                            name="tipoActivo"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                            required
+                        >
+                            <option value="">Seleccione un tipo</option>
+                        </select>
+                        <div id="errorTipo" class="error-message"></div>
+                    </div>
+
+                    <!-- Modelo -->
+                    <div>
+                        <label for="modelo" class="block text-sm font-medium text-secondary mb-2">
+                            Modelo *
+                        </label>
+                        <input 
+                            type="text" 
+                            id="modelo" 
+                            name="modelo"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                            placeholder="Ej: R740, ISR 4451, FG-100F"
+                            required
+                        >
+                        <div id="errorModelo" class="error-message"></div>
+                    </div>
+
+                    <!-- Categoría -->
+                    <div>
+                        <label for="categoria" class="block text-sm font-medium text-secondary mb-2">
+                            Categoría *
+                        </label>
+                        <select 
+                            id="categoria" 
+                            name="categoria"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                            required
+                        >
+                            <option value="">Seleccione una categoría</option>
+                        </select>
+                        <div id="errorCategoria" class="error-message"></div>
+                    </div>
+
+                    <!-- Fabricante -->
+                    <div>
+                        <label for="fabricante" class="block text-sm font-medium text-secondary mb-2">
+                            Fabricante *
+                        </label>
+                        <select 
+                            id="fabricante" 
+                            name="fabricante"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                            required
+                        >
+                            <option value="">Seleccione un fabricante</option>
+                        </select>
+                        <div id="errorFabricante" class="error-message"></div>
+                    </div>
+
+                    <!-- Imagen del Modelo -->
+                    <div>
+                        <label for="imagenModelo" class="block text-sm font-medium text-secondary mb-2">
+                            Imagen del Modelo (URL)
+                        </label>
+                        <input 
+                            type="url" 
+                            id="imagenModelo" 
+                            name="imagenModelo"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                            placeholder="https://ejemplo.com/imagen.jpg"
+                        >
+                        <p class="text-xs text-gray-500 mt-2">Opcional. URL de la imagen del modelo</p>
+                    </div>
+                </div>
+
+                <!-- Especificaciones -->
+                <div>
+                    <label for="especificaciones" class="block text-sm font-medium text-secondary mb-2">
+                        Especificaciones Técnicas *
+                    </label>
+                    <textarea 
+                        id="especificaciones" 
+                        name="especificaciones"
+                        rows="4"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                        placeholder="Ej: 2x Xeon Gold, 256GB RAM, 8x 1TB SSD, 10Gbps throughput..."
+                        required
+                    ></textarea>
+                    <div id="errorEspecificaciones" class="error-message"></div>
+                    <p class="text-xs text-gray-500 mt-2">Describa las características técnicas principales del modelo</p>
+                </div>
+
+                <!-- Características Adicionales -->
+                <div>
+                    <label class="block text-sm font-medium text-secondary mb-3">
+                        Características Adicionales
+                    </label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div id="caracteristicas-container"></div>
+                    </div>
+                    <button 
+                        type="button" 
+                        id="btnAgregarCaracteristica"
+                        class="mt-4 text-primary hover:text-primary/80 transition flex items-center space-x-2"
+                    >
+                        <i class="fas fa-plus"></i>
+                        <span>Agregar característica</span>
+                    </button>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4 pt-6 border-t">
+                    <button 
+                        type="button" 
+                        id="btnCancelar"
+                        class="px-6 py-3 border border-gray-300 text-secondary rounded-lg hover:bg-gray-50 transition"
+                    >
+                        Cancelar
+                    </button>
+                    <button 
+                        type="button" 
+                        id="btnGuardarBorrador"
+                        class="px-6 py-3 border border-primary text-primary rounded-lg hover:bg-primary/5 transition"
+                    >
+                        Guardar como Borrador
+                    </button>
+                    <button 
+                        type="submit" 
+                        class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition flex items-center justify-center space-x-2"
+                    >
+                        <i class="fas fa-save"></i>
+                        <span>Guardar Modelo</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Instrucciones -->
+        <div class="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6">
+            <div class="flex items-start space-x-3">
+                <i class="fas fa-info-circle text-blue-500 text-xl mt-1"></i>
+                <div>
+                    <h4 class="font-semibold text-dark mb-2">Instrucciones para agregar modelos</h4>
+                    <ul class="text-secondary space-y-2">
+                        <li class="flex items-start space-x-2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span>Asegúrese de que el modelo no exista previamente en el sistema</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span>Proporcione especificaciones técnicas detalladas para facilitar la identificación</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span>Los campos marcados con * son obligatorios</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span>Puede agregar múltiples características adicionales según sea necesario</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white mt-12">
+        <div class="container mx-auto px-4 py-8">
+            <div class="text-center">
+                <p class="text-gray-400">&copy; 2024 Sistema de Control de Inventario. Todos los derechos reservados.</p>
+                <div class="flex justify-center space-x-6 mt-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition">Política de Privacidad</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition">Términos de Servicio</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition">Soporte</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ==================== CAPA DE DATOS ====================
+        const tiposActivo = [
+            { "id": 1, "nombre": "Computadora", "icon": "fa-desktop" },
+            { "id": 2, "nombre": "Teclado", "icon": "fa-keyboard" },
+            { "id": 3, "nombre": "Mouse", "icon": "fa-mouse" },
+            { "id": 4, "nombre": "Monitor", "icon": "fa-tv" },
+            { "id": 5, "nombre": "Teléfono", "icon": "fa-phone" },
+            { "id": 6, "nombre": "Router", "icon": "fa-wifi" },
+            { "id": 7, "nombre": "Servidor", "icon": "fa-server" },
+            { "id": 8, "nombre": "Switch", "icon": "fa-network-wired" },
+            { "id": 9, "nombre": "Firewall", "icon": "fa-shield-alt" },
+            { "id": 10, "nombre": "Impresora", "icon": "fa-print" }
+        ];
+
+        const categorias = [
+            { "id": 1, "nombre": "Hardware", "descripcion": "Equipos físicos y dispositivos" },
+            { "id": 2, "nombre": "Redes", "descripcion": "Dispositivos de conectividad" },
+            { "id": 3, "nombre": "Seguridad", "descripcion": "Equipos de protección" },
+            { "id": 4, "nombre": "Almacenamiento", "descripcion": "Dispositivos de almacenamiento" },
+            { "id": 5, "nombre": "Periféricos", "descripcion": "Dispositivos auxiliares" },
+            { "id": 6, "nombre": "Comunicación", "descripcion": "Equipos de comunicación" }
+        ];
+
+        const fabricantes = [
+            { "id": 1, "nombre": "Dell", "pais": "EE.UU." },
+            { "id": 2, "nombre": "HP", "pais": "EE.UU." },
+            { "id": 3, "nombre": "Lenovo", "pais": "China" },
+            { "id": 4, "nombre": "Cisco", "pais": "EE.UU." },
+            { "id": 5, "nombre": "Fortinet", "pais": "EE.UU." },
+            { "id": 6, "nombre": "Synology", "pais": "Taiwán" },
+            { "id": 7, "nombre": "Ubiquiti", "pais": "EE.UU." },
+            { "id": 8, "nombre": "Microsoft", "pais": "EE.UU." },
+            { "id": 9, "nombre": "Apple", "pais": "EE.UU." },
+            { "id": 10, "nombre": "Asus", "pais": "Taiwán" }
+        ];
+
+        const caracteristicasEjemplo = [
+            { "id": 1, "nombre": "Capacidad de RAM", "valor": "32GB" },
+            { "id": 2, "nombre": "Almacenamiento", "valor": "1TB SSD" },
+            { "id": 3, "nombre": "Procesador", "valor": "Intel Core i7" },
+            { "id": 4, "nombre": "Puertos USB", "valor": "4x USB 3.0" },
+            { "id": 5, "nombre": "Conectividad", "valor": "WiFi 6, Bluetooth 5.0" },
+            { "id": 6, "nombre": "Sistema Operativo", "valor": "Windows 11 Pro" }
+        ];
+
+        // ==================== FUNCIONES DE RENDERIZADO ====================
+
+        // 1. Renderizar opciones de tipo de activo
+        function renderTiposActivo(tipos) {
+            return tipos.map(tipo => `
+                <option value="${tipo.id}">${tipo.nombre}</option>
+            `).join("");
+        }
+
+        // 2. Renderizar opciones de categoría
+        function renderCategorias(cats) {
+            return cats.map(cat => `
+                <option value="${cat.id}">${cat.nombre}</option>
+            `).join("");
+        }
+
+        // 3. Renderizar opciones de fabricante
+        function renderFabricantes(fabs) {
+            return fabs.map(fab => `
+                <option value="${fab.id}">${fab.nombre}</option>
+            `).join("");
+        }
+
+        // 4. Renderizar campo de característica
+        function renderCaracteristicaField(id, nombre = "", valor = "") {
+            return `
+                <div class="caracteristica-field border border-gray-200 rounded-lg p-4 bg-gray-50" data-id="${id}">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="text-sm font-medium text-secondary">Característica ${id}</span>
+                        <button type="button" class="btn-remove-caracteristica text-danger hover:text-danger/80" title="Eliminar">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-secondary mb-1">Nombre</label>
+                            <input 
+                                type="text" 
+                                class="nombre-caracteristica w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-1 focus:ring-primary"
+                                placeholder="Ej: Memoria RAM"
+                                value="${nombre}"
+                            >
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-secondary mb-1">Valor</label>
+                            <input 
+                                type="text" 
+                                class="valor-caracteristica w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-1 focus:ring-primary"
+                                placeholder="Ej: 16GB DDR4"
+                                value="${valor}"
+                            >
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 5. Renderizar opciones de ejemplo para características
+        function renderCaracteristicasEjemplo(caracts) {
+            return caracts.map(caract => `
+                <div class="border border-gray-200 rounded-lg p-3 cursor-pointer hover:border-primary hover:bg-blue-50 transition" 
+                     data-nombre="${caract.nombre}" 
+                     data-valor="${caract.valor}">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <div class="font-medium text-sm text-dark">${caract.nombre}</div>
+                            <div class="text-xs text-secondary">${caract.valor}</div>
+                        </div>
+                        <i class="fas fa-plus text-primary"></i>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        // ==================== INICIALIZACIÓN ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Llenar select de tipos de activo
+            const selectTipo = document.getElementById('tipoActivo');
+            selectTipo.innerHTML = '<option value="">Seleccione un tipo</option>' + renderTiposActivo(tiposActivo);
+            
+            // Llenar select de categorías
+            const selectCategoria = document.getElementById('categoria');
+            selectCategoria.innerHTML = '<option value="">Seleccione una categoría</option>' + renderCategorias(categorias);
+            
+            // Llenar select de fabricantes
+            const selectFabricante = document.getElementById('fabricante');
+            selectFabricante.innerHTML = '<option value="">Seleccione un fabricante</option>' + renderFabricantes(fabricantes);
+            
+            // Renderizar características de ejemplo
+            const containerCaracteristicas = document.getElementById('caracteristicas-container');
+            containerCaracteristicas.innerHTML = renderCaracteristicasEjemplo(caracteristicasEjemplo);
+            
+            // Contador para características
+            let caracteristicaCounter = 1;
+            
+            // ==================== MANEJO DE EVENTOS ====================
+            
+            // Agregar nueva característica
+            document.getElementById('btnAgregarCaracteristica').addEventListener('click', function() {
+                caracteristicaCounter++;
+                const nuevaCaracteristica = renderCaracteristicaField(caracteristicaCounter);
+                containerCaracteristicas.insertAdjacentHTML('beforeend', nuevaCaracteristica);
+            });
+            
+            // Delegación de eventos para eliminar características
+            containerCaracteristicas.addEventListener('click', function(e) {
+                if (e.target.closest('.btn-remove-caracteristica')) {
+                    const field = e.target.closest('.caracteristica-field');
+                    if (field && containerCaracteristicas.children.length > 1) {
+                        field.remove();
+                    } else {
+                        // Si solo queda uno, limpiarlo en lugar de eliminarlo
+                        const inputs = field.querySelectorAll('input');
+                        inputs.forEach(input => input.value = '');
+                    }
+                }
+                
+                // Agregar característica desde ejemplo
+                if (e.target.closest('[data-nombre]')) {
+                    const ejemplo = e.target.closest('[data-nombre]');
+                    const nombre = ejemplo.getAttribute('data-nombre');
+                    const valor = ejemplo.getAttribute('data-valor');
+                    
+                    caracteristicaCounter++;
+                    const nuevaCaracteristica = renderCaracteristicaField(caracteristicaCounter, nombre, valor);
+                    containerCaracteristicas.insertAdjacentHTML('beforeend', nuevaCaracteristica);
+                    
+                    // Efecto visual de confirmación
+                    ejemplo.classList.add('bg-green-50', 'border-green-200');
+                    setTimeout(() => {
+                        ejemplo.classList.remove('bg-green-50', 'border-green-200');
+                    }, 500);
+                }
+            });
+            
+            // Validación del formulario
+            function validarFormulario() {
+                let valido = true;
+                
+                // Limpiar errores anteriores
+                document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+                document.querySelectorAll('input, select, textarea').forEach(el => el.classList.remove('input-error'));
+                
+                // Validar nombre
+                const nombre = document.getElementById('nombreModelo').value.trim();
+                if (!nombre) {
+                    document.getElementById('errorNombre').textContent = 'El nombre del modelo es requerido';
+                    document.getElementById('nombreModelo').classList.add('input-error');
+                    valido = false;
+                }
+                
+                // Validar tipo
+                const tipo = document.getElementById('tipoActivo').value;
+                if (!tipo) {
+                    document.getElementById('errorTipo').textContent = 'Seleccione un tipo de activo';
+                    document.getElementById('tipoActivo').classList.add('input-error');
+                    valido = false;
+                }
+                
+                // Validar modelo
+                const modelo = document.getElementById('modelo').value.trim();
+                if (!modelo) {
+                    document.getElementById('errorModelo').textContent = 'El modelo es requerido';
+                    document.getElementById('modelo').classList.add('input-error');
+                    valido = false;
+                }
+                
+                // Validar categoría
+                const categoria = document.getElementById('categoria').value;
+                if (!categoria) {
+                    document.getElementById('errorCategoria').textContent = 'Seleccione una categoría';
+                    document.getElementById('categoria').classList.add('input-error');
+                    valido = false;
+                }
+                
+                // Validar fabricante
+                const fabricante = document.getElementById('fabricante').value;
+                if (!fabricante) {
+                    document.getElementById('errorFabricante').textContent = 'Seleccione un fabricante';
+                    document.getElementById('fabricante').classList.add('input-error');
+                    valido = false;
+                }
+                
+                // Validar especificaciones
+                const especificaciones = document.getElementById('especificaciones').value.trim();
+                if (!especificaciones) {
+                    document.getElementById('errorEspecificaciones').textContent = 'Las especificaciones son requeridas';
+                    document.getElementById('especificaciones').classList.add('input-error');
+                    valido = false;
+                } else if (especificaciones.length < 20) {
+                    document.getElementById('errorEspecificaciones').textContent = 'Las especificaciones deben tener al menos 20 caracteres';
+                    document.getElementById('especificaciones').classList.add('input-error');
+                    valido = false;
+                }
+                
+                return valido;
+            }
+            
+            // Envío del formulario
+            document.getElementById('formNuevoModelo').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!validarFormulario()) {
+                    // Scroll al primer error
+                    const primerError = document.querySelector('.input-error');
+                    if (primerError) {
+                        primerError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        primerError.focus();
+                    }
+                    return;
+                }
+                
+                // Recopilar datos del formulario
+                const formData = {
+                    nombre: document.getElementById('nombreModelo').value.trim(),
+                    tipo: document.getElementById('tipoActivo').value,
+                    tipoNombre: document.getElementById('tipoActivo').options[document.getElementById('tipoActivo').selectedIndex].text,
+                    modelo: document.getElementById('modelo').value.trim(),
+                    categoria: document.getElementById('categoria').value,
+                    categoriaNombre: document.getElementById('categoria').options[document.getElementById('categoria').selectedIndex].text,
+                    fabricante: document.getElementById('fabricante').value,
+                    fabricanteNombre: document.getElementById('fabricante').options[document.getElementById('fabricante').selectedIndex].text,
+                    imagen: document.getElementById('imagenModelo').value.trim() || 'https://picsum.photos/300/200?random=' + Math.floor(Math.random() * 100),
+                    especificaciones: document.getElementById('especificaciones').value.trim(),
+                    caracteristicas: [],
+                    fechaCreacion: new Date().toISOString().split('T')[0],
+                    estado: 'activo'
+                };
+                
+                // Recopilar características adicionales
+                document.querySelectorAll('.caracteristica-field').forEach(field => {
+                    const nombre = field.querySelector('.nombre-caracteristica').value.trim();
+                    const valor = field.querySelector('.valor-caracteristica').value.trim();
+                    
+                    if (nombre && valor) {
+                        formData.caracteristicas.push({
+                            nombre: nombre,
+                            valor: valor
+                        });
+                    }
+                });
+                
+                // Simular envío a servidor
+                console.log('Datos del modelo a guardar:', formData);
+                
+                // Mostrar mensaje de éxito
+                const successMessage = document.getElementById('successMessage');
+                successMessage.style.display = 'block';
+                
+                // Scroll al mensaje de éxito
+                successMessage.scrollIntoView({ behavior: 'smooth' });
+                
+                // Resetear formulario después de 3 segundos
+                setTimeout(() => {
+                    this.reset();
+                    successMessage.style.display = 'none';
+                    
+                    // Resetear características
+                    containerCaracteristicas.innerHTML = renderCaracteristicasEjemplo(caracteristicasEjemplo);
+                    caracteristicaCounter = 1;
+                    
+                    // Resetear selects
+                    selectTipo.value = '';
+                    selectCategoria.value = '';
+                    selectFabricante.value = '';
+                }, 3000);
+            });
+            
+            // Botón cancelar
+            document.getElementById('btnCancelar').addEventListener('click', function() {
+                if (confirm('¿Está seguro de cancelar? Los datos no guardados se perderán.')) {
+                    window.history.back();
+                }
+            });
+            
+            // Botón guardar borrador
+            document.getElementById('btnGuardarBorrador').addEventListener('click', function() {
+                // Simular guardado como borrador
+                const datosBorrador = {
+                    nombre: document.getElementById('nombreModelo').value.trim(),
+                    modelo: document.getElementById('modelo').value.trim(),
+                    fechaGuardado: new Date().toLocaleString()
+                };
+                
+                if (!datosBorrador.nombre && !datosBorrador.modelo) {
+                    alert('Complete al menos el nombre y modelo para guardar como borrador');
+                    return;
+                }
+                
+                console.log('Guardando borrador:', datosBorrador);
+                alert('Borrador guardado exitosamente');
+            });
+            
+            // Prevenir comportamiento por defecto de enlaces
+            document.addEventListener('click', function(event) {
+                const link = event.target.closest('a[href^="#"]');
+                if (link) {
+                    event.preventDefault();
+                    // En un sistema real, aquí iría la lógica de navegación
+                }
+            });
+            
+            // Validación en tiempo real
+            const inputsValidacion = ['nombreModelo', 'modelo', 'especificaciones'];
+            inputsValidacion.forEach(id => {
+                document.getElementById(id).addEventListener('blur', function() {
+                    if (this.value.trim()) {
+                        this.classList.remove('input-error');
+                        document.getElementById(`error${id.charAt(0).toUpperCase() + id.slice(1)}`).textContent = '';
+                    }
+                });
+            });
+            
+            const selectsValidacion = ['tipoActivo', 'categoria', 'fabricante'];
+            selectsValidacion.forEach(id => {
+                document.getElementById(id).addEventListener('change', function() {
+                    if (this.value) {
+                        this.classList.remove('input-error');
+                        document.getElementById(`error${id.charAt(0).toUpperCase() + id.slice(1)}`).textContent = '';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
