@@ -51,18 +51,173 @@
             </header>
 
             <!-- div donde insertar el contenido -->
-            <section class="flex flex-col flex-1 py-8">
+            <section class="tab-container flex flex-col overflow-y-auto flex-1 py-8">
                 <div class="selection pl-8 pb-6">
-                    <button class="border border-gray-200 p-3 text-center font-sans rounded-lg"
-                        type="button">Modelos</button>
-                    <button class="border border-gray-200 p-3 text-center font-sans rounded-lg"
-                        type="button">Activos</button>
-                    <button class="border border-gray-200 p-3 text-center font-sans rounded-lg"
-                        type="button">Asignaciones</button>
-
-
+                    <button class="tab-btn border-gray-200 bg-white text-gray-600 border p-3 text-center font-sans rounded-lg hover:bg-gray-50 transition-colors" 
+                            data-target="modelos">Modelos</button>
+                    
+                    <button class="tab-btn border-gray-200 bg-white text-gray-600 border p-3 text-center font-sans rounded-lg hover:bg-gray-50 transition-colors" 
+                            data-target="activos">Activos</button>
+                            
+                    <button class="tab-btn border-gray-200 bg-white text-gray-600 border p-3 text-center font-sans rounded-lg hover:bg-gray-50 transition-colors" 
+                            data-target="asignaciones">Asignaciones</button>
                 </div>
-                <div id="modelos" class="container flex flex-row" data-section="1">
+                <!-- seccion de datos de modelos -->
+                <div id="modelos" class="tab-section container flex flex-row hidden" data-section="2">
+                    <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm mx-8">
+                        <table class="min-w-full divide-y divide-gray-200 bg-white text-sm">
+                            <thead class="bg-gray-50 text-left">
+                                <tr>
+                                    <th class="px-6 py-4 font-medium text-gray-900 uppercase tracking-wider">ID</th>
+                                    <th class="px-6 py-4 font-medium text-gray-900 uppercase tracking-wider">Marca</th>
+                                    <th class="px-6 py-4 font-medium text-gray-900 uppercase tracking-wider">Modelo</th>
+                                    <th class="px-6 py-4 font-medium text-gray-900 uppercase tracking-wider">Categoria</th>
+                                    <th class="px-6 py-4 font-medium text-gray-900 uppercase tracking-wider">Fin del soporte</th>
+                                    <th class="px-6 py-4 font-medium text-gray-900 uppercase tracking-wider">Especificaciones</th>
+                                    <th class="px-6 py-4 font-medium text-gray-900 uppercase tracking-wider text-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            #001
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 font-medium text-gray-900">Monitor Gaming 27"</td>
+                                    <td class="px-6 py-4 text-gray-600">SN-998234-A</td>
+                                    <td class="px-6 py-4 text-gray-600">UltraSync-V3</td>
+                                    <td class="px-6 py-4 text-gray-600">Disponible</td>
+                                    <td class="px-6 py-4 text-right space-x-3">
+                                        <button class="text-blue-600 hover:text-blue-900"><i class="fas fa-edit"></i>
+                                            Editar</button>
+                                        <button class="text-red-600 hover:text-red-900"><i
+                                                class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="">
+                            <div class="border rounded shadow-sm ">
+                                <form id="formNuevoModelo" class="p-8 space-y-6">
+                                    <!-- Datos del formulario -->
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <!-- Nombre del Modelo -->
+                                        <div>
+                                            <label for="nombreModelo" class="block text-sm font-medium text-secondary mb-2">
+                                                Nombre del Modelo *
+                                            </label>
+                                            <input 
+                                                type="text" 
+                                                id="nombreModelo" 
+                                                name="nombreModelo"
+                                                class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                                                placeholder="Ej: Dell PowerEdge R740"
+                                                required
+                                            >
+                                            <div id="errorNombre" class="error-message"></div>
+                                        </div>
+                                        <!-- Modelo -->
+                                        <div>
+                                            <label for="modelo" class="block text-sm font-medium text-secondary mb-2">
+                                                Modelo *
+                                            </label>
+                                            <input 
+                                                type="text" 
+                                                id="modelo" 
+                                                name="modelo"
+                                                class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                                                placeholder="Ej: R740, ISR 4451, FG-100F"
+                                                required
+                                            >
+                                            <div id="errorModelo" class="error-message"></div>
+                                        </div>
+
+                                        <!-- Categoría -->
+                                        <div>
+                                            <label for="categoria" class="block text-sm font-medium text-secondary mb-2">
+                                                Categoría *
+                                            </label>
+                                            <select 
+                                                id="categoria" 
+                                                name="categoria"
+                                                class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                                                required
+                                            >
+                                                <option value="">Seleccione una categoría</option>
+                                            </select>
+                                            <div id="errorCategoria" class="error-message"></div>
+                                        </div>
+
+                                        <!-- Fabricante -->
+                                        <div>
+                                            <label for="marca" class="block text-sm font-medium text-secondary mb-2">
+                                                Fabricante *
+                                            </label>
+                                            <input 
+                                                type="text" 
+                                                id="marca" 
+                                                name="modelo"
+                                                class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                                                placeholder="Ej: Microsoft, Apple"
+                                                required
+                                            >
+                                            <div id="errorFabricante" class="error-message"></div>
+                                        </div>
+                                    </div>
+                                    <!-- fecha de produccion -->
+                                     <label for="modelo" class="block text-sm font-medium text-secondary mb-2">
+                                                Fecha de Produccion
+                                            </label>
+                                     
+                                     <input type="date" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition" id="fecha_produccion">
+
+                                     <!-- fecha de soporte -->
+                                     <label for="modelo" class="block text-sm font-medium text-secondary mb-2">
+                                                Fecha de Fin de Soporte
+                                            </label>
+                                     
+                                     <input type="date" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition" id="fecha_soporte">
+
+                                    <!-- Especificaciones -->
+                                    <div>
+                                        <label for="especificaciones" class="block text-sm font-medium text-secondary mb-2">
+                                            Especificaciones Técnicas *
+                                        </label>
+                                        <textarea 
+                                            id="especificaciones" 
+                                            name="especificaciones"
+                                            rows="4"
+                                            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                                            placeholder="Ej: 2x Xeon Gold, 256GB RAM, 8x 1TB SSD, 10Gbps throughput..."
+                                            required
+                                        ></textarea>
+                                        <div id="errorEspecificaciones" class="error-message"></div>
+                                        <p class="text-xs text-gray-500 mt-2">Describa las características técnicas principales del modelo</p>
+                                    </div>
+
+                                    <!-- Botones de Acción -->
+                                    <div class="flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4 pt-6 border-t">
+                                        
+                                        
+                                        <button 
+                                            type="submit" 
+                                            class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition flex items-center justify-center space-x-2"
+                                        >
+                                            <i class="fas fa-save"></i>
+                                            <span>Guardar Modelo</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                </div>
+                <!-- seccion de datos de activos -->
+                <div id="activos" class="tab-section container flex flex-row block" data-section="1">
                     <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm mx-8">
                         <table class="min-w-full divide-y divide-gray-200 bg-white text-sm">
                             <thead class="bg-gray-50 text-left">
@@ -153,12 +308,12 @@
 
                                         <!-- Fabricante -->
                                         <div>
-                                            <label for="fabricante" class="block text-sm font-medium text-secondary mb-2">
+                                            <label for="marca" class="block text-sm font-medium text-secondary mb-2">
                                                 Fabricante *
                                             </label>
                                             <input 
                                                 type="text" 
-                                                id="modelo" 
+                                                id="marca" 
                                                 name="modelo"
                                                 class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
                                                 placeholder="Ej: Microsoft, Apple"
@@ -179,7 +334,160 @@
                                                 Fecha de Fin de Soporte
                                             </label>
                                      
+                                     <input type="date" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition" id="fecha_soporte">
+
+                                    <!-- Especificaciones -->
+                                    <div>
+                                        <label for="especificaciones" class="block text-sm font-medium text-secondary mb-2">
+                                            Especificaciones Técnicas *
+                                        </label>
+                                        <textarea 
+                                            id="especificaciones" 
+                                            name="especificaciones"
+                                            rows="4"
+                                            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                                            placeholder="Ej: 2x Xeon Gold, 256GB RAM, 8x 1TB SSD, 10Gbps throughput..."
+                                            required
+                                        ></textarea>
+                                        <div id="errorEspecificaciones" class="error-message"></div>
+                                        <p class="text-xs text-gray-500 mt-2">Describa las características técnicas principales del modelo</p>
+                                    </div>
+
+                                    <!-- Botones de Acción -->
+                                    <div class="flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4 pt-6 border-t">
+                                        
+                                        
+                                        <button 
+                                            type="submit" 
+                                            class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition flex items-center justify-center space-x-2"
+                                        >
+                                            <i class="fas fa-save"></i>
+                                            <span>Guardar Modelo</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                </div>
+                <!-- seccion de datos de asignacion -->
+                <div id="asignaciones" class="tab-section container flex flex-row block" data-section="1">
+                    <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm mx-8">
+                        <table class="min-w-full divide-y divide-gray-200 bg-white text-sm">
+                            <thead class="bg-gray-50 text-left">
+                                <tr>
+                                    <th class="px-6 py-4 font-medium text-gray-900 uppercase tracking-wider">ID</th>
+                                    <th class="px-6 py-4 font-medium text-gray-900 uppercase tracking-wider">Nombre</th>
+                                    <th class="px-6 py-4 font-medium text-gray-900 uppercase tracking-wider">Serial</th>
+                                    <th class="px-6 py-4 font-medium text-gray-900 uppercase tracking-wider">Modelo</th>
+                                    <th class="px-6 py-4 font-medium text-gray-900 uppercase tracking-wider">Estado</th>
+                                    <th class="px-6 py-4 font-medium text-gray-900 uppercase tracking-wider text-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            #001
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 font-medium text-gray-900">Monitor Gaming 27"</td>
+                                    <td class="px-6 py-4 text-gray-600">SN-998234-A</td>
+                                    <td class="px-6 py-4 text-gray-600">UltraSync-V3</td>
+                                    <td class="px-6 py-4 text-gray-600">Disponible</td>
+                                    <td class="px-6 py-4 text-right space-x-3">
+                                        <button class="text-blue-600 hover:text-blue-900"><i class="fas fa-edit"></i>
+                                            Editar</button>
+                                        <button class="text-red-600 hover:text-red-900"><i
+                                                class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="">
+                            <div class="border rounded shadow-sm ">
+                                <form id="formNuevoModelo" class="p-8 space-y-6">
+                                    <!-- Datos del formulario -->
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <!-- Nombre del Modelo -->
+                                        <div>
+                                            <label for="nombreModelo" class="block text-sm font-medium text-secondary mb-2">
+                                                Nombre del Modelo *
+                                            </label>
+                                            <input 
+                                                type="text" 
+                                                id="nombreModelo" 
+                                                name="nombreModelo"
+                                                class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                                                placeholder="Ej: Dell PowerEdge R740"
+                                                required
+                                            >
+                                            <div id="errorNombre" class="error-message"></div>
+                                        </div>
+                                        <!-- Modelo -->
+                                        <div>
+                                            <label for="modelo" class="block text-sm font-medium text-secondary mb-2">
+                                                Modelo *
+                                            </label>
+                                            <input 
+                                                type="text" 
+                                                id="modelo" 
+                                                name="modelo"
+                                                class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                                                placeholder="Ej: R740, ISR 4451, FG-100F"
+                                                required
+                                            >
+                                            <div id="errorModelo" class="error-message"></div>
+                                        </div>
+
+                                        <!-- Categoría -->
+                                        <div>
+                                            <label for="categoria" class="block text-sm font-medium text-secondary mb-2">
+                                                Categoría *
+                                            </label>
+                                            <select 
+                                                id="categoria" 
+                                                name="categoria"
+                                                class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                                                required
+                                            >
+                                                <option value="">Seleccione una categoría</option>
+                                            </select>
+                                            <div id="errorCategoria" class="error-message"></div>
+                                        </div>
+
+                                        <!-- Fabricante -->
+                                        <div>
+                                            <label for="marca" class="block text-sm font-medium text-secondary mb-2">
+                                                Fabricante *
+                                            </label>
+                                            <input 
+                                                type="text" 
+                                                id="marca" 
+                                                name="modelo"
+                                                class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                                                placeholder="Ej: Microsoft, Apple"
+                                                required
+                                            >
+                                            <div id="errorFabricante" class="error-message"></div>
+                                        </div>
+                                    </div>
+                                    <!-- fecha de produccion -->
+                                     <label for="modelo" class="block text-sm font-medium text-secondary mb-2">
+                                                Fecha de Produccion
+                                            </label>
+                                     
                                      <input type="date" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition" id="fecha_produccion">
+
+                                     <!-- fecha de soporte -->
+                                     <label for="modelo" class="block text-sm font-medium text-secondary mb-2">
+                                                Fecha de Fin de Soporte
+                                            </label>
+                                     
+                                     <input type="date" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition" id="fecha_soporte">
 
                                     <!-- Especificaciones -->
                                     <div>
