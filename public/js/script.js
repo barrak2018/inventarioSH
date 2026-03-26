@@ -2,7 +2,7 @@
 export const navigationItems = [
     { "icon": "fas fa-tachometer-alt", "label": "Dashboard", "active": false, "badge": "", "path": "/inventarioSH/public/vistas/_index.html" },
     { "icon": "fas fa-boxes", "label": "Inventory", "active": false, "badge": "", "path": "/inventarioSH/public/vistas/inventario.html" },
-    // ... resto de items
+    { "icon": "fas fa-chart-bar", "label": "Analisis", "active": false, "badge": "", "path": "#"}
 ];
 
 export function renderNavigationMenu(items) {
