@@ -94,18 +94,32 @@
                             <h3 class="text-lg font-bold mb-4">Registrar Nuevo Modelo</h3>
                             <form id="form-modelos" class="space-y-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del Modelo *</label>
-                                    <input type="text" name="nombreModelo" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary" placeholder="Ej: Latitude 5420" required>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Marca *</label>
+                                    <input type="text" name="Marca" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary" placeholder="Ej: Latitude 5420" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Modelo *</label>
+                                    <input type="text" name="Modelo" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary" placeholder="Ej: Latitude 5420" required>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Categoría *</label>
-                                    <select name="categoria" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary" required>
+                                    <select name="Categoria" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary" required>
                                         <option value="">Seleccione...</option>
+                                        <option value="game">test</option>
                                     </select>
                                 </div>
                                 <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Produccion</label>
+                                    <input type="date" name="Fecha_produccion" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">fin del Soporte</label>
+                                    <input type="date" name="Fin_soporte" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary">
+                                </div>
+                                <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Especificaciones Técnicas</label>
-                                    <textarea name="especificaciones" rows="3" class="w-full border border-gray-300 rounded-lg px-4 py-2" placeholder="Detalles del hardware..." required></textarea>
+                                    <textarea name="Especificaciones" rows="3" class="w-full border border-gray-300 rounded-lg px-4 py-2" placeholder="Detalles del hardware..." required></textarea>
+                                    
                                 </div>
                                 <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg hover:bg-opacity-90 transition flex items-center justify-center space-x-2">
                                     <i class="fas fa-save"></i>

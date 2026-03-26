@@ -53,6 +53,8 @@ function table_render_modelos(data) {
     });
 }
 
+
+
 // --- Inicialización del Sistema ---
 document.addEventListener('DOMContentLoaded', async () => {
     console.log("Iniciando Sistema de Control...");
@@ -93,7 +95,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 }
             }
-
+    
             // Lógica para el botón EDITAR
             const editBtn = e.target.closest('.btn-edit');
             if (editBtn) {
@@ -102,9 +104,41 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Aquí podrías disparar la apertura de un modal de edición
                 alert(`Funcionalidad de edición para el ID ${id} en desarrollo.`);
             }
+
+            
         });
+
+        // logica de formularios
+        const formModelos = document.getElementById("form-modelos");
+        formModelos.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            
+            // 1. Convertimos el formulario en un objeto JS puro
+            const data = Object.fromEntries(new FormData(formModelos));
+            
+            console.log("Datos a enviar:", data);
+
+            try {
+                // 2. Usamos el método create de tu clase InventoryService
+                // El objeto 'data' viaja directo al body de la petición
+                await inventoryAPI.create("modelos", data);
+                
+                alert("¡Modelo guardado con éxito!");
+                formModelos.reset(); // Limpiar formulario
+                
+                // 3. Recargar la tabla automáticamente
+                const nuevosDatos = await inventoryAPI.getAll("modelos");
+                table_render_modelos(nuevosDatos);
+                
+            } catch (error) {
+                alert("Error al guardar: " + error.message);
+            }
+        });
+
+        
 
     } catch (error) {
         console.error("Error crítico en la inicialización:", error);
     }
 });
+
