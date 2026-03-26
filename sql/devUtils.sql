@@ -36,5 +36,5 @@ INSERT INTO `modelos` (`Marca`, `Modelo`, `Categoria`, `Fecha_produccion`, `Fin_
 ('Zebra', 'ZT230', 'Impresora', 2019, '2025-08-30', 'Industrial Label Printer, Térmica'),
 ('Fortinet', 'FortiGate 60F', 'Firewall', 2020, '2027-05-15', 'Next-Generation Firewall'),
 ('APC', 'Smart-UPS 1500VA', 'Energia', 2021, '2028-12-31', 'LCD 120V con SmartConnect');
-
+select * from modelos;
 select * from modelos order by 1 asc;
