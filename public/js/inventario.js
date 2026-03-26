@@ -1,8 +1,43 @@
 console.log('script');
 
-import InventoryService from './inventoryService.js';
+import {InventoryService} from './inventoryService.js';
 import config from './config.json' with { type: "json" };
-import { renderNavigationMenu, navigationItems } from './script.js';
+// import { renderNavigationMenu, navigationItems } from './script.js';
+
+// script.js
+const navigationItems = [
+    { "icon": "fas fa-tachometer-alt", "label": "Dashboard", "active": false, "badge": "", "path": "/inventarioSH/public/vistas/_index.html" },
+    { "icon": "fas fa-boxes", "label": "Inventory", "active": false, "badge": "", "path": "/inventarioSH/public/vistas/inventario.html" },
+    // ... resto de items
+];
+
+function renderNavigationMenu(items) {
+    const menuContainer = document.getElementById("nav-menu");
+    if (!menuContainer) return;
+
+    const _path = window.location.pathname;
+    
+    const menuHTML = items.map(item => {
+        // Lógica de active basada en la ruta actual
+        const isActive = _path.endsWith(item.path);
+        const activeClass = isActive 
+            ? "bg-gray-800 text-white" 
+            : "text-gray-300 hover:bg-gray-800 hover:text-white";
+        
+        return `
+            <li>
+                <a href="${item.path}" class="flex items-center px-4 py-3 rounded-lg ${activeClass} transition-colors">
+                    <i class="${item.icon} mr-3"></i>
+                    <span class="flex-1">${item.label}</span>
+                </a>
+            </li>
+        `;
+    }).join("");
+
+    menuContainer.innerHTML = menuHTML;
+}
+
+
 
 class TabManager {
     constructor() {
