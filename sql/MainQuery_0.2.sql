@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `modelos` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Categorias` (
   `ID_Categoria` INT(11) NOT NULL AUTO_INCREMENT,
-  `Nombre` VARCHAR(50) NULL DEFAULT NULL,
+  `Nombre` VARCHAR(50) NULL,
   
   PRIMARY KEY (`ID_Categoria`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 3;
