@@ -1,0 +1,7 @@
+
+
+class RenderTablas {
+    constructor(id) {
+        
+    }
+}
