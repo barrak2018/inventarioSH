@@ -12,47 +12,12 @@ const CONFIG = {
     inventoryAPI_url: "http://localhost/inventarioSH/api/inventory_manager.php"
 };
 
-// /**
-//  * Renderiza las filas de la tabla de modelos
-//  * @param {Array} data - Lista de modelos desde la API
-//  */
-// function table_render_modelos(data) {
-//     const tbody = document.getElementById('tbody-modelos');
-//     if (!tbody) return;
 
-//     tbody.innerHTML = ""; // Limpiar tabla
 
-//     if (data.length === 0) {
-//         tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No se encontraron modelos registrados.</td></tr>`;
-//         return;
-//     }
 
-//     data.forEach(item => {
-//         const fila = document.createElement('tr');
-//         fila.classList.add("hover:bg-gray-50", "transition-colors");
-        
-//         // Usamos data-id en los botones para identificar el registro en los eventos
-//         fila.innerHTML = `
-//             <td class="px-6 py-4">
-//                 <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-//                     # ${item.ID_Modelo}
-//                 </span>
-//             </td>
-//             <td class="px-6 py-4 font-medium text-gray-900">${item.Marca}</td>
-//             <td class="px-6 py-4 text-gray-600">${item.Modelo}</td>
-//             <td class="px-6 py-4 text-gray-600">${item.Categoria}</td>
-//             <td class="px-6 py-4 text-right space-x-3">
-//                 <button class="btn-edit text-blue-600 hover:text-blue-900" data-id="${item.ID_Modelo}" title="Editar">
-//                     <i class="fas fa-edit pointer-events-none"></i>
-//                 </button>
-//                 <button class="btn-delete text-red-600 hover:text-red-900" data-id="${item.ID_Modelo}" title="Eliminar">
-//                     <i class="fas fa-trash pointer-events-none"></i>
-//                 </button>
-//             </td>
-//         `;
-//         tbody.appendChild(fila);
-//     });
-// }
+
+
+
 
 
 
@@ -74,6 +39,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         const datos_modelos = await inventoryAPI.getAll("modelos");
 
         // table_render_modelos(datos_modelos);
+        function btnDelete(paramid) {
+        const getID = document.getElementById(paramid);
+    
+            getID.addEventListener('click', async (e) => {
+            const deleteBtn = e.target.closest('.btn-delete');
+
+                if (deleteBtn) {
+                    const id = deleteBtn.dataset.id;
+                    const confirmar = confirm(`¿Estás seguro de que deseas eliminar el modelo #${id}?`);
+
+                    if (confirmar) {
+                        try {
+                            await inventoryAPI.delete("modelos", id);
+                            const nuevosDatos = await inventoryAPI.getAll("modelos");
+                            modelos.render(nuevosDatos);
+                            alert("Modelo eliminado correctamente.");
+                        } catch (err) {
+                            alert("Error al eliminar: " + err.message);
+                        }
+                    }
+                }
+            });
+        }
         const modelos = new RenderTabla("tbody-modelos", {
             idField: "ID_Modelo",
             columns: [
@@ -82,11 +70,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 {field: "Categoria"},
             ],
             onEdit: (id) => console.log("Editando ID:", id),
-            onDelete: (id) => {
-                if(confirm("¿Seguro que deseas eliminar?")) {
-                console.log("Eliminando ID:", id);
-                    }
-            }
+            onDelete: btnDelete("tbody-modelos")
         });
         modelos.render(datos_modelos);
 
