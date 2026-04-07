@@ -22,7 +22,17 @@ CREATE TABLE IF NOT EXISTS `modelos` (
   `Fin_soporte` DATE NULL DEFAULT NULL,
   `Especificaciones` VARCHAR(255) NULL DEFAULT NULL,
   PRIMARY KEY (`ID_Modelo`)
-) ENGINE = InnoDB AUTO_INCREMENT = 3;
+) ENGINE = InnoDB AUTO_INCREMENT = 1;
+
+-- -----------------------------------------------------
+-- Table `Caracteristicas`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Categorias` (
+  `ID_Categoria` INT(11) NOT NULL AUTO_INCREMENT,
+  `Nombre` VARCHAR(50) NULL,
+  
+  PRIMARY KEY (`ID_Categoria`)
+) ENGINE = InnoDB AUTO_INCREMENT = 1;
 
 -- -----------------------------------------------------
 -- Table `activos`
@@ -43,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `activos` (
   CONSTRAINT `modelx`
     FOREIGN KEY (`ID_Modelo`)
     REFERENCES `modelos` (`ID_Modelo`)
-) ENGINE = InnoDB AUTO_INCREMENT = 8;
+) ENGINE = InnoDB AUTO_INCREMENT = 1;
 
 -- -----------------------------------------------------
 -- Table `asignaciones`
