@@ -23,7 +23,7 @@ function obtenerPK($tabla) {
 function obtenerTodo($tabla) {
     global $pdo;
     if (!validarEstructuraDB($tabla)) return [];
-    $stmt = $pdo->query("SELECT * FROM `$tabla` ORDER BY 1 DESC");
+    $stmt = $pdo->query("SELECT * FROM `$tabla` ORDER BY 1 ASC");
     return $stmt->fetchAll();
 }
 
