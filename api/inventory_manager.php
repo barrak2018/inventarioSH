@@ -11,7 +11,10 @@ $id = $_GET['id'] ?? null;
 $campo = $_GET['campo'] ?? null;
 $valor = $_GET['valor'] ?? null;
 
-if ($metodo == 'OPTIONS') { http_response_code(200); exit; }
+if ($metodo == 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 if (!$resource) enviarRespuesta(400, ["error" => "Recurso no especificado"]);
 
 switch ($metodo) {
@@ -47,10 +50,9 @@ switch ($metodo) {
         enviarRespuesta(405, ["error" => "Método no permitido"]);
 }
 
-function enviarRespuesta($codigo, $datos) {
+function enviarRespuesta($codigo, $datos)
+{
     http_response_code($codigo);
     echo json_encode($datos);
     exit;
 }
-
-?>
