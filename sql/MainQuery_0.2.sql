@@ -135,6 +135,34 @@ CREATE TABLE IF NOT EXISTS `historial` (
     ON UPDATE CASCADE
 ) ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Triggers para control de estado de activos
+-- -----------------------------------------------------
+
+DELIMITER //
+
+-- Cambia el estado a 'Asignado' cuando se crea un registro en asignaciones
+CREATE TRIGGER tr_activo_asignado
+AFTER INSERT ON asignaciones
+FOR EACH ROW
+BEGIN
+    UPDATE activos 
+    SET Estado = 'Asignado' 
+    WHERE ID_Activo = NEW.ID_Activo;
+END //
+
+-- Cambia el estado a 'Disponible' cuando se elimina la asignación
+CREATE TRIGGER tr_activo_disponible
+AFTER DELETE ON asignaciones
+FOR EACH ROW
+BEGIN
+    UPDATE activos 
+    SET Estado = 'Disponible' 
+    WHERE ID_Activo = OLD.ID_Activo;
+END //
+
+DELIMITER ;
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
