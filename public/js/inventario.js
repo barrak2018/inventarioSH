@@ -35,16 +35,30 @@ document.addEventListener('DOMContentLoaded', async () => {
             columns: [
                 { field: "Marca" },
                 { field: "Modelo" },
-                { field: "Categoria" },
+                { field: "Categoria" }
             ]
         });
+
+        const tablaActivos = new RenderTabla("tbody-activos", {
+            idField: "ID_Activo",
+            columns: [
+                { field: "Nombre" },
+                { field: "ID_Modelo" },
+                { field: "Estado" },
+                { field: "Observaciones" }, 
+                { field: "Modificado" },
+            ]
+        })
 
         // Carga inicial de datos desde el servidor
         const datos_modelos = await inventoryAPI.getAll("modelos");
         tablaModelos.render(datos_modelos);
-
+        const datos_activos = await inventoryAPI.getAll("activos");
+        tablaActivos.render(datos_activos);
         // --- 3. Delegación de Eventos para la Tabla ---
         // Manejamos Editar y Eliminar en un solo bloque para mayor eficiencia
+
+        // --------modelos---------------------------------------------
         const tbodyModelos = document.getElementById('tbody-modelos');
         
         if (tbodyModelos) {
@@ -64,10 +78,49 @@ document.addEventListener('DOMContentLoaded', async () => {
                             await inventoryAPI.delete("modelos", id);
                             
                             // Refrescar datos localmente tras éxito
+                            location.reload();
                             const nuevosDatos = await inventoryAPI.getAll("modelos");
                             tablaModelos.render(nuevosDatos);
                             
                             alert("Modelo eliminado correctamente.");
+                        } catch (err) {
+                            alert("Error al eliminar: " + err.message);
+                        }
+                    }
+                }
+        
+                // Lógica para el botón EDITAR
+                if (targetBtn.classList.contains('btn-edit')) {
+                    console.log("Iniciando edición del ID:", id);
+                    alert(`Funcionalidad de edición para el ID ${id} en desarrollo.`);
+                }
+            });
+        }
+        // ----------Activos-----------------------------------
+        const tbodyActivos = document.getElementById('tbody-activos');
+        
+        if (tbodyActivos) {
+            tbodyActivos.addEventListener('click', async (e) => {
+                // Buscamos el botón más cercano al clic (por si hacen clic en el icono dentro del botón)
+                const targetBtn = e.target.closest('button');
+                if (!targetBtn) return;
+
+                const id = targetBtn.dataset.id;
+
+                // Lógica para el botón ELIMINAR
+                if (targetBtn.classList.contains('btn-delete')) {
+                    const confirmar = confirm(`¿Estás seguro de que deseas eliminar el Activo #${id}?`);
+                    
+                    if (confirmar) {
+                        try {
+                            await inventoryAPI.delete("activos", id);
+                            
+                            // Refrescar datos localmente tras éxito
+                            location.reload();
+                            const nuevosDatos = await inventoryAPI.getAll("activos");
+                            tablaModelos.render(nuevosDatos);
+                            
+                            alert("Activo eliminado correctamente.");
                         } catch (err) {
                             alert("Error al eliminar: " + err.message);
                         }
