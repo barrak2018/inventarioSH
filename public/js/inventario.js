@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             });
         }
-
+        // verificar que la cedula exista en la tabla datos_personales 
         if (ID_empleado && datos_personales && datos_empleado) {
             ID_empleado.addEventListener('input', async(event) => {
                 // // Obtenemos el valor actual
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         console.log(resultado);
                         cedula_valida = true;
                         indicador.className = 'text-green-600'
-                        indicador.textContent = resultado.nombres + resultado.apellidos
+                        indicador.textContent = resultado.nombres + " " + resultado.apellidos
                         
                     }else{
                         indicador.className = 'text-red-600'
