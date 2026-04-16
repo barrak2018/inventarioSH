@@ -8,6 +8,7 @@
  */
 
 import { InventoryService } from './inventoryService.js';
+import {IntranetService} from './intranetService.js';
 import { renderNavigationMenu, navigationItems } from './script.js';
 import { TabManager } from "./TabManager.js";
 import { RenderTabla } from "./RenderTabla.js";
@@ -23,17 +24,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     try {
         // carga de CONFIG
-        const response = await fetch('../js/config.json'); // Ajusta la ruta según tu carpeta
-        if (!response.ok) throw new Error("No se pudo cargar la configuración");
+        // const response = await fetch('../js/config.json'); // Ajusta la ruta según tu carpeta
+        // if (!response.ok) throw new Error("No se pudo cargar la configuración");
         
-        CONFIG = await response.json();
-        console.log("Configuración cargada:", CONFIG);
+        // CONFIG = await response.json();
+        // console.log("Configuración cargada:", CONFIG);
         // --- 1. Inicialización de Componentes ---
         renderNavigationMenu(navigationItems);
         new TabManager(); // No se requiere asignar a variable si no se usará después
 
         // Inicializar el servicio de datos
         const inventoryAPI = new InventoryService(CONFIG.inventoryAPI_url);
+        const intranetAPI = new IntranetService(CONFIG.intranetAPI_url);
 
         // --- 2. Configuración de la Tabla de Modelos ---
         // Definimos la estructura pero no asignamos eventos aquí para evitar conflictos
@@ -73,7 +75,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         tablaActivos.render(datos_activos);
         const datos_asignaciones = await inventoryAPI.getAll("asignaciones");
         tablaAsignaciones.render(datos_asignaciones);
-        // --- 3. Delegación de Eventos para la Tabla ---
+
+        const datos_personales = await intranetAPI.getAll("datos_personales");
+        const datos_empleado = await intranetAPI.getAll("datos_empleado");
         // Manejamos Editar y Eliminar en un solo bloque para mayor eficiencia
 
         // --------modelos---------------------------------------------
@@ -200,6 +204,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const fecha_Compra = fomrActivos.querySelector('[name="Fecha_compra"]');
         const garantia = fomrActivos.querySelector('[name="Garantia"]');
+
+        const fecha_asignacion = formAsignaciones.querySelector('[name="Fecha_Asignacion"]');
+        const fecha_ultimo = formAsignaciones.querySelector('[name="Ultimo_Soporte"]');
         // 1. Obtenemos la fecha actual en formato YYYY-MM-DD
         const hoy = new Date().toISOString().split('T')[0];
 
@@ -208,6 +215,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         Fin_soporte.value = hoy;
         garantia.value = hoy;
         fecha_Compra.value = hoy;
+        fecha_asignacion.value = hoy;
+        fecha_ultimo.value = hoy;
+
         
         if (formModelos) {
             formModelos.addEventListener("submit", async (e) => {
@@ -275,6 +285,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         //-----------------asignaciones-------------------------
         // 1. Seleccionamos el elemento del DOM (el select)
         const selectActivo = formAsignaciones.querySelector('[name="ID_Activo"]');
+        const ID_empleado = formAsignaciones.querySelector('[name="ID_Empleado"]');
+        const indicador = document.getElementById('datos_empleado');
+        let cedula_valida = false;
 
         // 2. Verificamos que el select exista Y que tengamos datos para insertar
         if (selectActivo && datos_activos) {
@@ -292,7 +305,46 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
+        if (ID_empleado && datos_personales && datos_empleado) {
+            ID_empleado.addEventListener('input', async(event) => {
+                // // Obtenemos el valor actual
+                const valorActual = event.target.value;
+                const comparado = parseInt(valorActual, 10)
+                //console.log("El usuario está escribiendo:", typeof(comparado));
+
+                if(valorActual.length >= 6){
+                    const resultado = datos_personales.find(persona => persona.cedula === comparado)
+                    //console.log(resultado);
+                    
+                    if (resultado) {
+                        console.log("encontrado");
+                        console.log(resultado);
+                        cedula_valida = true;
+                        indicador.className = 'text-green-600'
+                        indicador.textContent = resultado.nombres + resultado.apellidos
+                        
+                    }else{
+                        indicador.className = 'text-red-600'
+                        indicador.textContent = 'No encontrado'
+                        cedula_valida = false;
+                        
+                    }
+                }
+                
+                // // Aquí puedes ejecutar tu lógica (validaciones, búsquedas, etc.)
+                // if (valorActual.length > 5) {
+                //     try {
+                //         const dato = await intranetAPI.getFicha(valorActual);
+                //     } catch (error) {
+                //         console.log(error);
+                        
+                //     }
+                // }
+            });
+        }
+
         if (formAsignaciones) {
+            
             formAsignaciones.addEventListener("submit", async (e) => {
                 e.preventDefault();
                 
@@ -300,23 +352,29 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const data = Object.fromEntries(new FormData(formAsignaciones));
                 console.log(data);
                 
+                if (cedula_valida) {
                 
-                try {
-                    // Enviar datos a la API
-                    await inventoryAPI.create("asignaciones", data);
+                    try {
+                        // Enviar datos a la API
+                        await inventoryAPI.create("asignaciones", data);
+                        
+                        alert("¡Asignacion guardada con éxito!");
+                        fomrActivos.reset(); // Limpiar campos
+                        
+                        // Recargar la tabla para mostrar el nuevo registro
+                        location.reload();
+                        const nuevosDatos = await inventoryAPI.getAll("asignaciones");
+                        tablaAsignaciones.render(nuevosDatos);
+                        
+                    } catch (error) {
+                        alert("Error al guardar: " + error.message);
+                    }
+                }else{
+                    console.log("cedula invalida");
                     
-                    alert("¡Asignacion guardada con éxito!");
-                    fomrActivos.reset(); // Limpiar campos
-                    
-                    // Recargar la tabla para mostrar el nuevo registro
-                    location.reload();
-                    const nuevosDatos = await inventoryAPI.getAll("asignaciones");
-                    tablaAsignaciones.render(nuevosDatos);
-                    
-                } catch (error) {
-                    alert("Error al guardar: " + error.message);
                 }
             });
+
         }
 
 
