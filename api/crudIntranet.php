@@ -51,7 +51,7 @@ function obtenerPorIdIntranet($tabla, $id) {
     global $pdo_int; // Corregido: Coincide con config.php
     
     $pks = [
-        "datos_empleado" => "id_empleado",
+        "datos_empleado" => "cod_datos",
         "datos_personales" => "cod_datos"
     ];
 
@@ -70,17 +70,17 @@ function obtenerPorIdIntranet($tabla, $id) {
 /**
  * Consulta combinada (JOIN) para ver la ficha completa usando $pdo_int
  */
-function obtenerFichaEmpleado($id_empleado) {
+function obtenerFichaEmpleado($cedula) {
     global $pdo_int; // Corregido: Coincide con config.php
     
     $sql = "SELECT e.*, p.nombres, p.apellidos, p.cedula 
-            FROM datos_empleado e
-            INNER JOIN datos_personales p ON e.cod_datos = p.cod_datos
-            WHERE e.id_empleado = ?";
+            FROM datos_personales p
+            INNER JOIN datos_empleado e ON p.cod_datos = e.cod_datos
+            WHERE p.cedula = ?";
     
     try {
         $stmt = $pdo_int->prepare($sql);
-        $stmt->execute([$id_empleado]);
+        $stmt->execute([$cedula]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
         return null;
