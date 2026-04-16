@@ -14,13 +14,20 @@ import { RenderTabla } from "./RenderTabla.js";
 
 // Configuración de la API
 const CONFIG = {
-    inventoryAPI_url: "http://localhost/inventarioSH/api/inventory_manager.php"
+    inventoryAPI_url: "http://localhost/inventarioSH/api/inventory_manager.php",
+    intranetAPI_url:  "http://localhost/inventarioSH/api/intranet_manager.php"
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log("Iniciando Sistema de Control...");
     
     try {
+        // carga de CONFIG
+        const response = await fetch('../js/config.json'); // Ajusta la ruta según tu carpeta
+        if (!response.ok) throw new Error("No se pudo cargar la configuración");
+        
+        CONFIG = await response.json();
+        console.log("Configuración cargada:", CONFIG);
         // --- 1. Inicialización de Componentes ---
         renderNavigationMenu(navigationItems);
         new TabManager(); // No se requiere asignar a variable si no se usará después
