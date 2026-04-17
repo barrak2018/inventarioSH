@@ -74,17 +74,24 @@ CREATE TABLE IF NOT EXISTS `asignaciones` (
 -- -----------------------------------------------------
 -- Table `usuarios`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `usuarios` (
-  `Cedula` INT NOT NULL,
-  `Email` VARCHAR(50) NULL,
-  `Nombre` VARCHAR(50) NULL,
-  `Cargo` VARCHAR(50) NULL,
-  `Last_Login` DATE NULL,
-  `Password_Hash` VARCHAR(255) NULL,
-  `Is_Active` TINYINT NULL,
-  PRIMARY KEY (`Cedula`),
-  UNIQUE INDEX `Email_UNIQUE` (`Email` ASC)
-) ENGINE = InnoDB;
+CREATE TABLE IF NOT exists usuarios (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    -- La cédula ahora es el identificador de acceso
+    cedula VARCHAR(20) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    
+    -- Datos informativos vinculados
+    nombre_completo VARCHAR(150) NOT NULL,
+    codigo_empleado VARCHAR(20) NOT NULL UNIQUE,
+    cargo VARCHAR(100),
+    empresa VARCHAR(100),
+    
+    -- Control
+    rol ENUM('admin', 'operador', 'visor') DEFAULT 'visor',
+    estatus TINYINT(1) DEFAULT 1,
+    ultimo_login DATETIME,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
 
 -- -----------------------------------------------------
 -- Table `Ordenes`
