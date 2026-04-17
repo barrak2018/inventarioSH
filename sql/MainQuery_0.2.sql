@@ -96,7 +96,7 @@ CREATE TABLE IF NOT exists usuarios (
 -- -----------------------------------------------------
 -- Table `Ordenes`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Ordenes` (
+/* CREATE TABLE IF NOT EXISTS `Ordenes` (
   `ID_Orden` INT NOT NULL AUTO_INCREMENT,
   `Fecha_Creacion` DATE NULL,
   `Estado` VARCHAR(20) NULL,
@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `Ordenes` (
     REFERENCES `usuarios` (`Cedula`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE
-) ENGINE = InnoDB;
+) ENGINE = InnoDB; */
 
 -- -----------------------------------------------------
 -- Table `historial`

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso al Sistema | Inventario</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilo para evitar el parpadeo de autocompletado de Chrome en inputs redondeados */
+        input:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0px 1000px white inset;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
+        <div class="flex flex-col items-center mb-8">
+            <div class="bg-blue-600 p-3 rounded-full mb-3 shadow-lg shadow-blue-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800">Bienvenido</h1>
+            <p class="text-gray-500 text-sm">Ingrese sus credenciales para continuar</p>
+        </div>
+
+        <form id="login-form" class="space-y-5">
+            <div>
+                <label for="login-cedula" class="block text-sm font-semibold text-gray-700 mb-1">Cédula de Identidad</label>
+                <input type="text" id="login-cedula" name="cedula" required autocomplete="off"
+                       placeholder="Ej: 30464263"
+                       class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder:text-gray-400">
+            </div>
+            
+            <div>
+                <label for="login-password" class="block text-sm font-semibold text-gray-700 mb-1">Contraseña</label>
+                <input type="password" id="login-password" name="password" required
+                       placeholder="••••••••"
+                       class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder:text-gray-400">
+            </div>
+
+            <div class="pt-2">
+                <button type="submit" id="btn-login"
+                        class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 active:scale-[0.98] transition-all shadow-md shadow-blue-100 flex items-center justify-center">
+                    <span>Iniciar Sesión</span>
+                    <svg id="login-spinner" class="animate-spin ml-2 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </button>
+            </div>
+        </form>
+
+        <div id="login-error" class="mt-4 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm hidden animate-pulse">
+            </div>
+
+        <footer class="mt-8 text-center text-xs text-gray-400">
+            &copy; 2026 CJE Perfumes - Sistema de Inventario
+        </footer>
+    </div>
+
+    <script type="module" src="../js/login.js"></script>
+</body>
+</html>
